@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="tr" class="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="tr" class="dark"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bilgi Arenası • 15 Soruluk Online Bilgi Yarışması</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -57,8 +56,7 @@
       animation: soundWave 0.6s ease-in-out infinite;
       transform-origin: bottom;
     }
-  </style>
-</head>
+  </style></head>
 <body class="antialiased selection:bg-indigo-500 selection:text-white flex flex-col">
 
   <!-- Bildirim Toast Kutusu -->
@@ -82,16 +80,13 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button id="btn-open-publish" type="button"
-          class="text-xs font-semibold text-emerald-300 hover:text-white px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 transition">
+        <button id="btn-open-publish" type="button" class="text-xs font-semibold text-emerald-300 hover:text-white px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 transition">
           🌐 Siteye Ekle (Ücretsiz)
         </button>
-        <button id="btn-toggle-sound" type="button" title="Ses Efektlerini Aç/Kapat"
-          class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/70 text-slate-300 transition">
+        <button id="btn-toggle-sound" type="button" title="Ses Efektlerini Aç/Kapat" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/70 text-slate-300 transition">
           <span id="sound-icon">🔊</span>
         </button>
-        <button id="btn-leave-room" type="button"
-          class="hidden text-xs font-semibold text-rose-300 hover:text-white px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/30 border border-rose-500/30 transition">
+        <button id="btn-leave-room" type="button" class="hidden text-xs font-semibold text-rose-300 hover:text-white px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/30 border border-rose-500/30 transition">
           Odadan Çık
         </button>
       </div>
@@ -133,18 +128,15 @@
           <label for="input-player-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
             Oyuncu Adın (Takma Ad)
           </label>
-          <input id="input-player-name" type="text" maxlength="20" placeholder="Örn: Ahmet, Zeynep, Kaan..."
-            class="w-full px-4 py-3.5 rounded-2xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 text-base font-medium transition" />
+          <input id="input-player-name" type="text" maxlength="20" placeholder="Örn: Ahmet, Zeynep, Kaan..." class="w-full px-4 py-3.5 rounded-2xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 text-base font-medium transition">
         </div>
 
         <!-- Sekmeler: Yeni Oda Kur / Odaya Katıl -->
         <div class="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800 mb-5">
-          <button id="tab-create" type="button"
-            class="py-2.5 px-3 rounded-xl text-sm font-bold transition bg-indigo-600 text-white shadow-md">
+          <button id="tab-create" type="button" class="py-2.5 px-3 rounded-xl text-sm font-bold transition bg-indigo-600 text-white shadow-md">
             👑 Yeni Oda Oluştur
           </button>
-          <button id="tab-join" type="button"
-            class="py-2.5 px-3 rounded-xl text-sm font-bold transition text-slate-400 hover:text-white">
+          <button id="tab-join" type="button" class="py-2.5 px-3 rounded-xl text-sm font-bold transition text-slate-400 hover:text-white">
             🚀 Odaya Katıl
           </button>
         </div>
@@ -155,10 +147,9 @@
             <p class="font-semibold text-indigo-300">Oda Kurucusu (Moderatör) Yetkileri:</p>
             <p>• Oluşan benzersiz davet linkini 3-5 arkadaşına gönderirsin.</p>
             <p>• Herkes lobiye katıldığında oturumu tek tıkla başlatırsın.</p>
-            <p>• 15 soruda İnşaat & Mühendislik, Bulmaca, Sesli Şarkı ve 6 genel kategori yer alır.</p>
+            <p>• 15 soruda İnşaat &amp; Mühendislik, Bulmaca, Sesli Şarkı ve 9 genel kültür/bilim kategorisi yer alır.</p>
           </div>
-          <button id="btn-create-room" type="button"
-            class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-base shadow-xl shadow-indigo-600/25 pulse-glow transition cursor-pointer">
+          <button id="btn-create-room" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-base shadow-xl shadow-indigo-600/25 pulse-glow transition cursor-pointer">
             Odayı Oluştur ve Davet Linki Al →
           </button>
         </div>
@@ -169,11 +160,9 @@
             <label for="input-room-code" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
               Oda Kodu veya Davet Linki
             </label>
-            <input id="input-room-code" type="text" placeholder="Örn: K7M9P veya davet linkini yapıştır"
-              class="w-full px-4 py-3.5 rounded-2xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 font-mono text-base tracking-wider transition" />
+            <input id="input-room-code" type="text" placeholder="Örn: K7M9P veya davet linkini yapıştır" class="w-full px-4 py-3.5 rounded-2xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 font-mono text-base tracking-wider transition">
           </div>
-          <button id="btn-join-room" type="button"
-            class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/25 transition cursor-pointer">
+          <button id="btn-join-room" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/25 transition cursor-pointer">
             Odaya Katıl →
           </button>
         </div>
@@ -184,17 +173,17 @@
             Testteki 12 Kategori (510 Soruluk Geniş Havuz)
           </p>
           <div class="flex flex-wrap justify-center gap-1.5 text-xs">
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🏗️ İnşaat & Mühendislik</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🏗️ İnşaat &amp; Mühendislik</span>
             <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">⚽ Spor</span>
             <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🌍 Genel Kültür</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🔬 Bilim & Teknoloji</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🔬 Bilim &amp; Teknoloji</span>
             <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🏛️ Tarih</span>
             <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🗺️ Coğrafya</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🎬 Sanat & Edebiyat</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">💰 Ekonomi & Finans</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🧠 Psikoloji & Felsefe</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🎬 Sanat &amp; Edebiyat</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">💰 Ekonomi &amp; Finans</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🧠 Psikoloji &amp; Felsefe</span>
             <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🍽️ Gastronomi</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🧩 Bulmaca & Zeka</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🧩 Bulmaca &amp; Zeka</span>
             <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🎵 Sesli Şarkı</span>
           </div>
         </div>
@@ -215,12 +204,10 @@
                 Bu ekran geçici bir sanal alan içinde çalıştığı için tarayıcı adresini yeni sekmede açtığınızda 404 hatası oluşur. Arkadaşlarınızla online oynamak için oyunu tek tıkla indirip <strong>tiiny.host</strong> veya <strong>Netlify Drop</strong> üzerine bırakabilirsiniz.
               </p>
               <div class="pt-1 flex flex-wrap gap-2">
-                <button id="btn-download-html" type="button"
-                  class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition cursor-pointer">
+                <button id="btn-download-html" type="button" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition cursor-pointer">
                   ⬇️ Oyunu İndir (index.html)
                 </button>
-                <button id="btn-open-publish-from-warn" type="button"
-                  class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-600 transition cursor-pointer">
+                <button id="btn-open-publish-from-warn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-600 transition cursor-pointer">
                   Ücretsiz Yayınlama Adımları
                 </button>
               </div>
@@ -235,8 +222,7 @@
               <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-300">Oda Kodu</span>
               <div class="flex items-center gap-2.5 mt-1">
                 <span id="lobby-room-code" class="text-2xl sm:text-3xl font-black font-mono tracking-widest text-white">-----</span>
-                <button id="btn-copy-code" type="button"
-                  class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition cursor-pointer">
+                <button id="btn-copy-code" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition cursor-pointer">
                   Kodu Kopyala
                 </button>
               </div>
@@ -261,10 +247,8 @@
               Arkadaşlarını Davet Et (Oda Linki)
             </label>
             <div class="flex flex-col sm:flex-row gap-2">
-              <input id="lobby-invite-link" type="text" readonly
-                class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700/80 text-slate-200 font-mono text-xs focus:outline-none select-all" />
-              <button id="btn-copy-link" type="button"
-                class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition cursor-pointer whitespace-nowrap">
+              <input id="lobby-invite-link" type="text" readonly="" class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700/80 text-slate-200 font-mono text-xs focus:outline-none select-all">
+              <button id="btn-copy-link" type="button" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition cursor-pointer whitespace-nowrap">
                 <span>🔗</span>
                 <span id="copy-link-text">Linki Kopyala</span>
               </button>
@@ -308,12 +292,10 @@
           </div>
 
           <div class="flex flex-col sm:flex-row gap-3">
-            <button id="btn-add-bot" type="button"
-              class="sm:w-auto px-4 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition cursor-pointer">
+            <button id="btn-add-bot" type="button" class="sm:w-auto px-4 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition cursor-pointer">
               🤖 + Test Botu Ekle
             </button>
-            <button id="btn-start-game" type="button"
-              class="flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/25 transition cursor-pointer">
+            <button id="btn-start-game" type="button" class="flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/25 transition cursor-pointer">
               🚀 Oturumu Başlat (15 Soru)
             </button>
           </div>
@@ -341,7 +323,7 @@
             Soru 1 / 15
           </span>
           <span id="quiz-category-badge" class="px-3 py-1.5 rounded-xl bg-slate-800/90 border border-slate-700 text-slate-200 font-semibold text-xs sm:text-sm">
-            🏗️ İnşaat & Mühendislik
+            🏗️ İnşaat &amp; Mühendislik
           </span>
         </div>
 
@@ -384,8 +366,7 @@
                 </p>
               </div>
             </div>
-            <button id="btn-play-song" type="button"
-              class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:bg-slate-800 disabled:text-slate-400 disabled:border-slate-700 text-white font-bold text-xs sm:text-sm shadow-lg shadow-purple-600/30 border border-purple-400/30 transition cursor-pointer whitespace-nowrap">
+            <button id="btn-play-song" type="button" class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:bg-slate-800 disabled:text-slate-400 disabled:border-slate-700 text-white font-bold text-xs sm:text-sm shadow-lg shadow-purple-600/30 border border-purple-400/30 transition cursor-pointer whitespace-nowrap">
               🎵 Şarkıyı Dinle (1 Hak)
             </button>
           </div>
@@ -401,8 +382,7 @@
           <p id="quiz-feedback-text" class="text-sm font-semibold text-slate-200 text-center sm:text-left">
             Cevabın kaydedildi! Diğer oyuncular bekleniyor...
           </p>
-          <button id="btn-next-question" type="button"
-            class="hidden px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition cursor-pointer whitespace-nowrap">
+          <button id="btn-next-question" type="button" class="hidden px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition cursor-pointer whitespace-nowrap">
             Sonraki Soru →
           </button>
         </div>
@@ -453,7 +433,7 @@
         <div class="mb-8 p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-slate-800">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-rose-300">
-              📊 Oyuncu Hata & Doğruluk Analizi Tablosu
+              📊 Oyuncu Hata &amp; Doğruluk Analizi Tablosu
             </h3>
             <span class="text-[11px] text-slate-400">Toplam 15 Soru Üzerinden</span>
           </div>
@@ -478,12 +458,10 @@
 
         <!-- Tekrar Oyna / Yeni Oda Butonları -->
         <div class="flex flex-col sm:flex-row gap-3">
-          <button id="btn-play-again" type="button"
-            class="hidden flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-base shadow-xl shadow-indigo-600/25 transition cursor-pointer">
+          <button id="btn-play-again" type="button" class="hidden flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-base shadow-xl shadow-indigo-600/25 transition cursor-pointer">
             🔄 Aynı Odada Yeni Sorularla Tekrar Oyna
           </button>
-          <button id="btn-back-home" type="button"
-            class="flex-1 py-4 px-6 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-base border border-slate-700 transition cursor-pointer">
+          <button id="btn-back-home" type="button" class="flex-1 py-4 px-6 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-base border border-slate-700 transition cursor-pointer">
             Ana Ekrana Dön
           </button>
         </div>
@@ -509,12 +487,10 @@
         </div>
       </div>
       <div class="mt-5 flex flex-col sm:flex-row gap-2.5">
-        <button id="btn-modal-download" type="button"
-          class="flex-1 py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition cursor-pointer">
+        <button id="btn-modal-download" type="button" class="flex-1 py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition cursor-pointer">
           ⬇️ 1. index.html İndir
         </button>
-        <button id="btn-close-publish-2" type="button"
-          class="py-3.5 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition cursor-pointer">
+        <button id="btn-close-publish-2" type="button" class="py-3.5 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition cursor-pointer">
           Kapat
         </button>
       </div>
@@ -523,8 +499,10 @@
 
   <script>
     // =========================================================================
-    // 1. KİMLİK, DURUM VE ÇOK OYUNCULU AĞ YÖNETİMİ (PEERJS WEBRTC + BROADCAST)
+    // 1. KİMLİK, DURUM VE ÇOK OYUNCULU AĞ YÖNETİMİ (FIREBASE RTDB + PEERJS)
     // =========================================================================
+    const FIREBASE_DB_URL = "https://bilgi-arenasi-919d8-default-rtdb.europe-west1.firebasedatabase.app";
+
     function generateUniquePlayerId() {
       if (window.crypto && typeof window.crypto.randomUUID === "function") {
         return "usr_" + window.crypto.randomUUID().replace(/-/g, "").slice(0, 14);
@@ -555,12 +533,14 @@
       timerInterval: null,
       botTimeout: null,
       advanceTimeout: null,
+      syncInterval: null,
       soundEnabled: true,
       playedSongsForQ: new Set(),
       peer: null,
       hostConn: null,
       guestConns: new Map(),
-      broadcastChannel: null
+      broadcastChannel: null,
+      firebaseActive: false
     };
 
     // =========================================================================
@@ -4715,12 +4695,56 @@
     }
 
     // =========================================================================
-    // 7. PEERJS (WEBRTC) + BROADCASTCHANNEL ÇOK OYUNCULU SENKRONİZASYON
+    // 7. FIREBASE REALTIME DB + PEERJS + BROADCASTCHANNEL SENKRONİZASYON
     // =========================================================================
+    async function fbRequest(path, method = "GET", body = null) {
+      const url = `${FIREBASE_DB_URL}/${path}.json`;
+      const opts = {
+        method,
+        headers: { "Content-Type": "application/json" }
+      };
+      if (body !== null) {
+        opts.body = JSON.stringify(body);
+      }
+      const res = await fetch(url, opts);
+      if (!res.ok) throw new Error("Firebase HTTP " + res.status);
+      return await res.json();
+    }
+
+    function normalizeFirebaseRoom(rawRoom) {
+      if (!rawRoom) return null;
+      const room = { ...rawRoom };
+      room.players = room.players || {};
+      Object.values(room.players).forEach((p) => {
+        if (!p.answers) p.answers = {};
+      });
+      if (!Array.isArray(room.questions)) {
+        room.questions = room.questions ? Object.values(room.questions) : [];
+      }
+      if (!Array.isArray(room.usedQuestionIds)) {
+        room.usedQuestionIds = room.usedQuestionIds ? Object.values(room.usedQuestionIds) : [];
+      }
+      return room;
+    }
+
+    async function syncRoomToFirebase() {
+      if (!state.isModerator || !state.roomData || !state.roomCode) return;
+      try {
+        await fbRequest(`rooms/${state.roomCode}`, "PUT", state.roomData);
+        state.firebaseActive = true;
+        setConnectionStatus("Bulut Sunucu Aktif (Anlık Senkron)", "ok");
+      } catch (e) {
+        state.firebaseActive = false;
+      }
+    }
+
     function destroyNetworkSession() {
       if (state.timerInterval) clearInterval(state.timerInterval);
       if (state.botTimeout) clearTimeout(state.botTimeout);
       if (state.advanceTimeout) clearTimeout(state.advanceTimeout);
+      if (state.syncInterval) clearInterval(state.syncInterval);
+      state.syncInterval = null;
+      state.firebaseActive = false;
       SongAudioPlayer.stop();
 
       if (state.hostConn) {
@@ -4778,6 +4802,7 @@
       if (state.broadcastChannel) {
         try { state.broadcastChannel.postMessage(payload); } catch (e) {}
       }
+      syncRoomToFirebase();
     }
 
     function hostAddOrUpdatePlayer(player) {
@@ -4822,7 +4847,6 @@
 
       let earnedPoints = 0;
       if (isCorrect) {
-        // İlk doğru bilen 10 puan, sonrakiler sıralama ve geçen süreye göre azalarak kazanır
         const priorCorrectCount = Object.values(room.players).filter(
           (p) => p.answers && p.answers[qIndex] && p.answers[qIndex].isCorrect
         ).length;
@@ -4847,7 +4871,6 @@
         answeredAt: Date.now()
       };
 
-      // Tüm oyuncular cevapladıysa soruyu tamamla
       const allPlayers = Object.values(room.players);
       const everyoneAnswered = allPlayers.every(
         (p) => p.answers && p.answers[qIndex] !== undefined
@@ -4866,7 +4889,6 @@
       const room = state.roomData;
       if (room.questionRevealed) return;
 
-      // Cevap vermeyen oyunculara süre dolumu (-1) işaretle
       const qIdx = room.currentQuestionIndex;
       Object.values(room.players).forEach((p) => {
         if (!p.answers) p.answers = {};
@@ -4935,7 +4957,89 @@
       });
     }
 
-    function createHostRoom(playerName) {
+    function startHostFirebasePolling(code) {
+      if (state.syncInterval) clearInterval(state.syncInterval);
+      state.syncInterval = setInterval(async () => {
+        if (!state.isModerator || !state.roomData || state.roomCode !== code) return;
+        try {
+          const [joinReqs, ansReqs] = await Promise.all([
+            fbRequest(`rooms/${code}/joinRequests`, "GET"),
+            fbRequest(`rooms/${code}/answerRequests`, "GET")
+          ]);
+
+          if (joinReqs && typeof joinReqs === "object") {
+            const entries = Object.entries(joinReqs);
+            for (const [reqKey, pData] of entries) {
+              if (pData && pData.uid) {
+                hostAddOrUpdatePlayer(pData);
+              }
+              fbRequest(`rooms/${code}/joinRequests/${reqKey}`, "DELETE").catch(() => {});
+            }
+          }
+
+          if (ansReqs && typeof ansReqs === "object") {
+            const entries = Object.entries(ansReqs);
+            for (const [reqKey, aData] of entries) {
+              if (aData && aData.uid !== undefined) {
+                hostHandleAnswer(aData.uid, Number(aData.qIndex), Number(aData.optionIndex));
+              }
+              fbRequest(`rooms/${code}/answerRequests/${reqKey}`, "DELETE").catch(() => {});
+            }
+          }
+        } catch (e) {}
+      }, 1100);
+    }
+
+    function startGuestFirebasePolling(code, playerName) {
+      if (state.syncInterval) clearInterval(state.syncInterval);
+      let connectedNotified = false;
+
+      const pollOnce = async () => {
+        if (state.isModerator || state.roomCode !== code) return;
+        try {
+          const rawRoom = await fbRequest(`rooms/${code}`, "GET");
+          const normalized = normalizeFirebaseRoom(rawRoom);
+          if (normalized && normalized.code) {
+            state.firebaseActive = true;
+            setConnectionStatus("Bulut Sunucu Aktif", "ok");
+            const box = $("peer-troubleshoot-box");
+            if (box) box.classList.add("hidden");
+
+            if (!connectedNotified) {
+              connectedNotified = true;
+              showToast(`${code} odasına bağlanıldı!`, "success");
+            }
+
+            if (!normalized.players[state.playerUid]) {
+              fbRequest(`rooms/${code}/joinRequests/${state.playerUid}`, "PUT", {
+                uid: state.playerUid,
+                name: playerName,
+                requestedAt: Date.now()
+              }).catch(() => {});
+            }
+
+            // Yerel olarak kilitlenmiş ama sunucuya henüz işlenmemiş cevabı koru
+            const localMe = state.roomData && state.roomData.players ? state.roomData.players[state.playerUid] : null;
+            const remoteMe = normalized.players[state.playerUid];
+            if (localMe && localMe.answers && remoteMe) {
+              Object.keys(localMe.answers).forEach((k) => {
+                if (remoteMe.answers[k] === undefined) {
+                  remoteMe.answers[k] = localMe.answers[k];
+                }
+              });
+            }
+
+            state.roomData = normalized;
+            renderCurrentRoomState();
+          }
+        } catch (e) {}
+      };
+
+      pollOnce();
+      state.syncInterval = setInterval(pollOnce, 1100);
+    }
+
+    async function createHostRoom(playerName) {
       destroyNetworkSession();
       const code = generateRoomCode();
       state.roomCode = code;
@@ -4968,15 +5072,22 @@
       };
 
       setupLocalBroadcast(code);
-      setConnectionStatus("Sunucuya bağlanıyor...", "warn");
+      setConnectionStatus("Bulut sunucuya bağlanılıyor...", "warn");
 
+      // Firebase Realtime Database'e odayı kaydet ve dinlemeye başla
+      syncRoomToFirebase();
+      startHostFirebasePolling(code);
+
+      // İkincil kanal olarak PeerJS WebRTC bağlantısını da açık tut
       if (window.Peer) {
         try {
           const peer = new Peer(`bilgi-arenasi-${code}`, getPeerConfig());
           state.peer = peer;
 
           peer.on("open", () => {
-            setConnectionStatus("Canlı Bağlantı Aktif", "ok");
+            if (!state.firebaseActive) {
+              setConnectionStatus("Canlı Bağlantı Aktif", "ok");
+            }
           });
 
           peer.on("connection", (conn) => {
@@ -4998,32 +5109,24 @@
             });
           });
 
-          peer.on("error", (err) => {
-            setConnectionStatus("Bağlantı Uyarısı", "warn");
-            const box = $("peer-troubleshoot-box");
-            if (box) box.classList.remove("hidden");
-            if (err && err.type === "unavailable-id") {
-              showToast("Bu oda kodu şu an kullanımda, lütfen tekrar oda oluşturun.", "warn");
+          peer.on("error", () => {
+            if (!state.firebaseActive) {
+              setConnectionStatus("Bağlantı Uyarısı", "warn");
             }
           });
-        } catch (e) {
-          setConnectionStatus("Yerel Ağ Modu", "warn");
-        }
-      } else {
-        setConnectionStatus("Yerel Ağ Modu", "warn");
+        } catch (e) {}
       }
 
       renderCurrentRoomState();
       showToast(`Oda oluşturuldu! Kod: ${code}`, "success");
     }
 
-    function joinGuestRoom(playerName, code) {
+    async function joinGuestRoom(playerName, code) {
       destroyNetworkSession();
       state.roomCode = code;
       state.playerName = playerName;
       state.isModerator = false;
 
-      // Geçici yerel bekleme durumu
       state.roomData = {
         code,
         status: "lobby",
@@ -5058,6 +5161,15 @@
 
       setConnectionStatus("Odaya bağlanılıyor...", "warn");
 
+      // 1. Birincil Kanal: Firebase Realtime Database üzerinden odaya katıl
+      fbRequest(`rooms/${code}/joinRequests/${state.playerUid}`, "PUT", {
+        uid: state.playerUid,
+        name: playerName,
+        requestedAt: Date.now()
+      }).catch(() => {});
+      startGuestFirebasePolling(code, playerName);
+
+      // 2. İkincil Kanal: PeerJS WebRTC bağlantısı
       if (window.Peer) {
         try {
           const peer = new Peer(undefined, getPeerConfig());
@@ -5066,18 +5178,18 @@
 
           peer.on("open", () => {
             const attemptConnect = (attemptNum = 1) => {
-              if (joinedConfirmed || !state.peer || state.peer.destroyed) return;
+              if (joinedConfirmed || state.firebaseActive || !state.peer || state.peer.destroyed) return;
               const conn = peer.connect(`bilgi-arenasi-${code}`, { reliable: true });
               state.hostConn = conn;
 
               const retryTimer = setTimeout(() => {
-                if (!joinedConfirmed && attemptNum < 3) {
+                if (!joinedConfirmed && !state.firebaseActive && attemptNum < 2) {
                   attemptConnect(attemptNum + 1);
-                } else if (!joinedConfirmed) {
-                  setConnectionStatus("Oda Bulunamadı / NAT Engeli", "error");
+                } else if (!joinedConfirmed && !state.firebaseActive) {
+                  setConnectionStatus("Oda Bulunamadı", "error");
                   const box = $("peer-troubleshoot-box");
                   if (box) box.classList.remove("hidden");
-                  showToast("Odaya ulaşılamadı. Oda kodunu ve internet bağlantınızı kontrol edin.", "error");
+                  showToast("Odaya ulaşılamadı. Oda kodunu kontrol edin.", "error");
                 }
               }, 3500);
 
@@ -5089,11 +5201,10 @@
                   type: "JOIN_REQUEST",
                   player: { uid: state.playerUid, name: playerName }
                 });
-                showToast(`${code} odasına bağlanıldı!`, "success");
               });
 
               conn.on("data", (msg) => {
-                if (msg && msg.type === "ROOM_STATE" && msg.roomData) {
+                if (msg && msg.type === "ROOM_STATE" && msg.roomData && !state.firebaseActive) {
                   joinedConfirmed = true;
                   setConnectionStatus("Canlı Bağlantı Aktif", "ok");
                   state.roomData = msg.roomData;
@@ -5103,27 +5214,12 @@
 
               conn.on("error", () => {
                 clearTimeout(retryTimer);
-                if (attemptNum < 3) {
-                  attemptConnect(attemptNum + 1);
-                } else {
-                  setConnectionStatus("Bağlantı Hatası", "error");
-                  const box = $("peer-troubleshoot-box");
-                  if (box) box.classList.remove("hidden");
-                }
               });
             };
 
             attemptConnect(1);
           });
-
-          peer.on("error", () => {
-            setConnectionStatus("Ağ Bağlantı Uyarısı", "warn");
-            const box = $("peer-troubleshoot-box");
-            if (box) box.classList.remove("hidden");
-          });
-        } catch (e) {
-          setConnectionStatus("Bağlantı Hatası", "error");
-        }
+        } catch (e) {}
       }
 
       renderCurrentRoomState();
@@ -5451,6 +5547,13 @@
           qIndex,
           optionIndex
         };
+        fbRequest(`rooms/${state.roomCode}/answerRequests/${state.playerUid}_${qIndex}`, "PUT", {
+          uid: state.playerUid,
+          qIndex,
+          optionIndex,
+          submittedAt: Date.now()
+        }).catch(() => {});
+
         if (state.hostConn && state.hostConn.open) {
           try { state.hostConn.send(msg); } catch (e) {}
         }
@@ -5769,5 +5872,5 @@
       $("btn-modal-download").addEventListener("click", downloadGameHtmlFile);
     });
   </script>
-</body>
-</html>
+
+</body></html>
