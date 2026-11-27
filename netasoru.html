@@ -1,92 +1,147 @@
 <!DOCTYPE html>
-<html lang="tr" class="dark"><head>
+<html lang="tr" class="dark">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bilgi Arenası • 15 Soruluk Online Bilgi Yarışması</title>
+  <title>Bilgi Arenası • 15 Soruluk Canlı Bilgi Yarışması</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js" crossorigin="anonymous"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-deep: #060913;
+      --card-surface: rgba(13, 19, 38, 0.76);
+      --border-glow: rgba(129, 140, 248, 0.22);
+    }
     body {
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at top left, #1e1b4b 0%, #0f172a 45%, #090d16 100%);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-deep);
       color: #f8fafc;
       min-height: 100vh;
       overflow-x: hidden;
+      position: relative;
+    }
+    /* Hareketli Arena Arka Plan Işıkları */
+    .arena-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.26) 0%, transparent 45%),
+        radial-gradient(circle at 88% 20%, rgba(168, 85, 247, 0.22) 0%, transparent 42%),
+        radial-gradient(circle at 50% 92%, rgba(16, 185, 129, 0.16) 0%, transparent 48%),
+        linear-gradient(160deg, #070b19 0%, #0b1124 50%, #050811 100%);
+    }
+    .arena-grid {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(to right, rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
     }
     .glass-card {
-      background: rgba(15, 23, 42, 0.78);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      background: var(--card-surface);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
       border: 1px solid rgba(148, 163, 184, 0.16);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+      box-shadow:
+        0 24px 60px -15px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
+    }
+    .glass-subcard {
+      background: rgba(9, 14, 28, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.13);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
     }
     .option-btn {
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .option-btn:hover:not(:disabled) {
       transform: translateY(-2px);
-      border-color: rgba(129, 140, 248, 0.65);
-      background: rgba(49, 46, 129, 0.45);
+      border-color: rgba(129, 140, 248, 0.75);
+      background: linear-gradient(135deg, rgba(49, 46, 129, 0.52), rgba(67, 56, 202, 0.32));
+      box-shadow: 0 10px 25px -8px rgba(99, 102, 241, 0.38);
     }
     .option-btn:active:not(:disabled) {
-      transform: scale(0.99);
+      transform: scale(0.985);
     }
     @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.45); }
-      50% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
+      50% { box-shadow: 0 0 0 12px rgba(99, 102, 241, 0); }
     }
     .pulse-glow {
       animation: pulseGlow 2.2s infinite;
     }
     @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.95) translateY(8px); }
+      0% { opacity: 0; transform: scale(0.96) translateY(10px); }
       100% { opacity: 1; transform: scale(1) translateY(0); }
     }
     .animate-pop {
-      animation: popIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: popIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     @keyframes soundWave {
-      0%, 100% { transform: scaleY(0.35); }
+      0%, 100% { transform: scaleY(0.32); }
       50% { transform: scaleY(1); }
     }
     .eq-bar {
-      animation: soundWave 0.6s ease-in-out infinite;
+      animation: soundWave 0.58s ease-in-out infinite;
       transform-origin: bottom;
     }
-  </style></head>
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+    .float-slow {
+      animation: floatSlow 3.5s ease-in-out infinite;
+    }
+  </style>
+</head>
 <body class="antialiased selection:bg-indigo-500 selection:text-white flex flex-col">
+  <div class="arena-bg"></div>
+  <div class="arena-grid"></div>
 
   <!-- Bildirim Toast Kutusu -->
   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
   <!-- Üst Başlık -->
-  <header class="w-full border-b border-slate-800/80 bg-slate-950/60 backdrop-blur-md sticky top-0 z-30">
+  <header class="w-full border-b border-white/10 bg-slate-950/65 backdrop-blur-xl sticky top-0 z-30">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 font-black text-lg text-white">
-          ?
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/35 font-black text-lg text-white ring-1 ring-white/25">
+          ⚡
         </div>
         <div>
-          <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-white leading-none">
-            Bilgi Arenası
-          </h1>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-base sm:text-lg tracking-tight bg-gradient-to-r from-white via-indigo-100 to-purple-200 bg-clip-text text-transparent leading-none">
+              Bilgi Arenası
+            </h1>
+            <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+              CANLI
+            </span>
+          </div>
           <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">
-            Çok Oyunculu Canlı Bilgi Yarışması
+            Çok Oyunculu Gerçek Zamanlı Bilgi Yarışması
           </p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <button id="btn-open-publish" type="button" class="text-xs font-semibold text-emerald-300 hover:text-white px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 transition">
-          🌐 Siteye Ekle (Ücretsiz)
+        <button id="btn-open-publish" type="button" class="text-xs font-semibold text-emerald-300 hover:text-white px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 transition cursor-pointer">
+          🌐 Siteye Ekle
         </button>
-        <button id="btn-toggle-sound" type="button" title="Ses Efektlerini Aç/Kapat" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/70 text-slate-300 transition">
+        <button id="btn-toggle-sound" type="button" title="Ses Efektlerini Aç/Kapat" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 text-slate-300 transition cursor-pointer">
           <span id="sound-icon">🔊</span>
         </button>
-        <button id="btn-leave-room" type="button" class="hidden text-xs font-semibold text-rose-300 hover:text-white px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/30 border border-rose-500/30 transition">
+        <button id="btn-leave-room" type="button" class="hidden text-xs font-semibold text-rose-300 hover:text-white px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/30 border border-rose-500/30 transition cursor-pointer">
           Odadan Çık
         </button>
       </div>
@@ -98,16 +153,19 @@
 
     <!-- 1. EKRAN: GİRİŞ & ODA OLUŞTURMA / KATILMA -->
     <section id="screen-landing" class="w-full max-w-xl mx-auto animate-pop">
-      <div class="glass-card rounded-3xl p-6 sm:p-9">
-        <div class="text-center mb-7">
-          <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 text-xs font-semibold mb-3">
-            <span>⚡</span> 15 Soru • 12 Kategori • 510 Soruluk Geniş Havuz
+      <div class="glass-card rounded-3xl p-6 sm:p-9 relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="text-center mb-7 relative">
+          <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-400/35 text-indigo-200 text-xs font-bold mb-3.5 shadow-sm">
+            <span>✨</span> 15 Soru • 13 Kategori • Görsel &amp; Sesli Sorular
           </span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
             Arkadaşlarınla Yarışmaya Başla
           </h2>
-          <p class="text-slate-400 text-sm mt-2">
-            İsmini yaz, yeni oda kurup davet linkini paylaş veya arkadaşının oda linkiyle doğrudan katıl.
+          <p class="text-slate-400 text-sm mt-2 leading-relaxed">
+            Takma adını yaz, yeni oda kurup davet linkini paylaş veya arkadaşının oda koduyla anında katıl.
           </p>
         </div>
 
@@ -125,31 +183,31 @@
 
         <!-- Oyuncu Adı Girişi -->
         <div class="mb-5">
-          <label for="input-player-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+          <label for="input-player-name" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
             Oyuncu Adın (Takma Ad)
           </label>
-          <input id="input-player-name" type="text" maxlength="20" placeholder="Örn: Ahmet, Zeynep, Kaan..." class="w-full px-4 py-3.5 rounded-2xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 text-base font-medium transition">
+          <input id="input-player-name" type="text" maxlength="20" placeholder="Örn: Yusuf, Kaan, Zeynep..." class="w-full px-4 py-3.5 rounded-2xl bg-slate-950/80 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 text-base font-semibold transition">
         </div>
 
         <!-- Sekmeler: Yeni Oda Kur / Odaya Katıl -->
-        <div class="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800 mb-5">
-          <button id="tab-create" type="button" class="py-2.5 px-3 rounded-xl text-sm font-bold transition bg-indigo-600 text-white shadow-md">
+        <div class="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-slate-950/85 border border-slate-800/90 mb-5">
+          <button id="tab-create" type="button" class="py-2.5 px-3 rounded-xl text-sm font-bold transition bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md cursor-pointer">
             👑 Yeni Oda Oluştur
           </button>
-          <button id="tab-join" type="button" class="py-2.5 px-3 rounded-xl text-sm font-bold transition text-slate-400 hover:text-white">
+          <button id="tab-join" type="button" class="py-2.5 px-3 rounded-xl text-sm font-bold transition text-slate-400 hover:text-white cursor-pointer">
             🚀 Odaya Katıl
           </button>
         </div>
 
         <!-- Yeni Oda Oluştur Paneli -->
         <div id="panel-create" class="space-y-4">
-          <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/90 text-xs text-slate-300 space-y-1.5">
-            <p class="font-semibold text-indigo-300">Oda Kurucusu (Moderatör) Yetkileri:</p>
-            <p>• Oluşan benzersiz davet linkini 3-5 arkadaşına gönderirsin.</p>
-            <p>• Herkes lobiye katıldığında oturumu tek tıkla başlatırsın.</p>
-            <p>• 15 soruda İnşaat &amp; Mühendislik, Bulmaca, Sesli Şarkı ve 9 genel kültür/bilim kategorisi yer alır.</p>
+          <div class="p-4 rounded-2xl glass-subcard text-xs text-slate-300 space-y-1.5">
+            <p class="font-bold text-indigo-300 flex items-center gap-1.5"><span>⚡</span> Hızlı &amp; Adil Yarışma Kuralları:</p>
+            <p>• Tüm oyuncular cevabı işaretlediğinde <strong>süre bitimi beklenmeden</strong> doğru cevap açılır.</p>
+            <p>• İlk doğru bilen <strong>10 puan</strong> alır; diğerleri hız ve sıralamaya göre puan kazanır.</p>
+            <p>• Görsel sorular, 4 saniyelik gerçek sesli şarkı soruları, inşaat &amp; genel kültür havuzu!</p>
           </div>
-          <button id="btn-create-room" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-base shadow-xl shadow-indigo-600/25 pulse-glow transition cursor-pointer">
+          <button id="btn-create-room" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-extrabold text-base shadow-xl shadow-indigo-600/30 pulse-glow transition cursor-pointer">
             Odayı Oluştur ve Davet Linki Al →
           </button>
         </div>
@@ -157,34 +215,35 @@
         <!-- Odaya Katıl Paneli -->
         <div id="panel-join" class="hidden space-y-4">
           <div>
-            <label for="input-room-code" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+            <label for="input-room-code" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
               Oda Kodu veya Davet Linki
             </label>
-            <input id="input-room-code" type="text" placeholder="Örn: K7M9P veya davet linkini yapıştır" class="w-full px-4 py-3.5 rounded-2xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 font-mono text-base tracking-wider transition">
+            <input id="input-room-code" type="text" placeholder="Örn: K7M9P veya davet linkini yapıştır" class="w-full px-4 py-3.5 rounded-2xl bg-slate-950/80 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 font-mono text-base tracking-wider transition">
           </div>
-          <button id="btn-join-room" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/25 transition cursor-pointer">
+          <button id="btn-join-room" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/25 transition cursor-pointer">
             Odaya Katıl →
           </button>
         </div>
 
         <!-- Kategori Özeti -->
-        <div class="mt-7 pt-5 border-t border-slate-800/80">
-          <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 text-center mb-2.5">
-            Testteki 12 Kategori (510 Soruluk Geniş Havuz)
+        <div class="mt-7 pt-5 border-t border-white/10">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 text-center mb-2.5">
+            13 Farklı Kategori • 540+ Soruluk Geniş Havuz
           </p>
           <div class="flex flex-wrap justify-center gap-1.5 text-xs">
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🏗️ İnşaat &amp; Mühendislik</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">⚽ Spor</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🌍 Genel Kültür</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🔬 Bilim &amp; Teknoloji</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🏛️ Tarih</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🗺️ Coğrafya</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🎬 Sanat &amp; Edebiyat</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">💰 Ekonomi &amp; Finans</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🧠 Psikoloji &amp; Felsefe</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🍽️ Gastronomi</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🧩 Bulmaca &amp; Zeka</span>
-            <span class="px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700/60">🎵 Sesli Şarkı</span>
+            <span class="px-2.5 py-1 rounded-lg bg-indigo-500/15 text-indigo-200 border border-indigo-400/30 font-semibold">🖼️ Görsel Soru</span>
+            <span class="px-2.5 py-1 rounded-lg bg-purple-500/15 text-purple-200 border border-purple-400/30 font-semibold">🎵 Sesli Şarkı</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">🏗️ İnşaat &amp; Mühendislik</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">⚽ Spor</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">🌍 Genel Kültür</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">🔬 Bilim &amp; Teknoloji</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">🏛️ Tarih</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">🗺️ Coğrafya</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">🎬 Sanat &amp; Edebiyat</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">💰 Ekonomi</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">🧠 Psikoloji</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">🍽️ Gastronomi</span>
+            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 border border-white/10">🧩 Bulmaca</span>
           </div>
         </div>
       </div>
@@ -199,16 +258,16 @@
           <div class="flex items-start gap-3">
             <span class="text-xl mt-0.5">⚠️</span>
             <div class="flex-1 text-xs space-y-1.5">
-              <p class="font-bold text-amber-300 text-sm">Geçici Önizleme Penceresindesiniz (Yeni Sekmede 404 Verir)</p>
+              <p class="font-bold text-amber-300 text-sm">Geçici Önizleme Penceresindesiniz</p>
               <p class="text-slate-200 leading-relaxed">
-                Bu ekran geçici bir sanal alan içinde çalıştığı için tarayıcı adresini yeni sekmede açtığınızda 404 hatası oluşur. Arkadaşlarınızla online oynamak için oyunu tek tıkla indirip <strong>tiiny.host</strong> veya <strong>Netlify Drop</strong> üzerine bırakabilirsiniz.
+                Arkadaşlarınızla online oynamak için oyunu indirip <strong>tiiny.host</strong> veya <strong>Netlify Drop</strong> üzerine yükleyin.
               </p>
               <div class="pt-1 flex flex-wrap gap-2">
                 <button id="btn-download-html" type="button" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition cursor-pointer">
                   ⬇️ Oyunu İndir (index.html)
                 </button>
                 <button id="btn-open-publish-from-warn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-600 transition cursor-pointer">
-                  Ücretsiz Yayınlama Adımları
+                  Yayınlama Adımları
                 </button>
               </div>
             </div>
@@ -216,13 +275,13 @@
         </div>
 
         <!-- Oda Kodu ve Paylaşım Alanı -->
-        <div class="p-4 sm:p-5 rounded-2xl bg-indigo-950/50 border border-indigo-500/30 mb-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-indigo-500/20">
+        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-950/75 via-slate-900/85 to-purple-950/60 border border-indigo-400/30 mb-6 shadow-inner">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
             <div>
               <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-300">Oda Kodu</span>
               <div class="flex items-center gap-2.5 mt-1">
                 <span id="lobby-room-code" class="text-2xl sm:text-3xl font-black font-mono tracking-widest text-white">-----</span>
-                <button id="btn-copy-code" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition cursor-pointer">
+                <button id="btn-copy-code" type="button" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white border border-white/15 transition cursor-pointer">
                   Kodu Kopyala
                 </button>
               </div>
@@ -230,24 +289,19 @@
             <div class="text-left sm:text-right">
               <span id="connection-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <span id="connection-badge-text">Canlı Bağlantı Aktif</span>
+                <span id="connection-badge-text">Bulut Sunucu Aktif</span>
               </span>
-              <p class="text-xs text-slate-400 mt-1.5">3 - 5 kişilik ideal grup (Maks. 8)</p>
+              <p class="text-xs text-slate-400 mt-1.5">Maksimum 8 Yarışmacı</p>
             </div>
-          </div>
-
-          <!-- Bağlantı Sorunu Bilgilendirme Kutusu -->
-          <div id="peer-troubleshoot-box" class="hidden mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-400/30 text-[11px] text-amber-100 leading-relaxed">
-            <strong class="text-amber-300">Bağlantı Notu:</strong> Arkadaşınız linke tıkladığında odaya ulaşamıyorsa; ağındaki güvenlik duvarı/NAT doğrudan P2P bağlantıyı engelliyor olabilir. Arkadaşınız aynı internet/Wi-Fi ağındaysa veya mobil veriden Wi-Fi'ye geçip sayfayı yenileyerek aynı <strong>Oda Kodu</strong> ile tekrar deneyebilir.
           </div>
 
           <!-- Davet Linki Satırı -->
           <div id="invite-link-wrapper" class="pt-4">
             <label for="lobby-invite-link" class="block text-[11px] font-bold uppercase tracking-wider text-indigo-300 mb-1.5">
-              Arkadaşlarını Davet Et (Oda Linki)
+              Arkadaşlarını Davet Et (Tek Tıkla Katılım Linki)
             </label>
             <div class="flex flex-col sm:flex-row gap-2">
-              <input id="lobby-invite-link" type="text" readonly="" class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700/80 text-slate-200 font-mono text-xs focus:outline-none select-all">
+              <input id="lobby-invite-link" type="text" readonly class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950/90 border border-slate-700/80 text-slate-200 font-mono text-xs focus:outline-none select-all">
               <button id="btn-copy-link" type="button" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition cursor-pointer whitespace-nowrap">
                 <span>🔗</span>
                 <span id="copy-link-text">Linki Kopyala</span>
@@ -259,8 +313,8 @@
         <!-- Katılımcı Listesi -->
         <div class="mb-6">
           <div class="flex items-center justify-between mb-3">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300">
-              Katılımcılar (<span id="lobby-player-count">1</span>/8)
+            <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-200">
+              Arenadaki Oyuncular (<span id="lobby-player-count">1</span>/8)
             </h3>
             <span id="lobby-status-hint" class="text-xs text-slate-400">
               Oyuncuların katılması bekleniyor...
@@ -273,18 +327,15 @@
         </div>
 
         <!-- Moderatör Kontrol Alanı -->
-        <div id="mod-controls" class="hidden pt-5 border-t border-slate-800/90 space-y-4">
-          <!-- Moderatör Kategori Seçimi -->
-          <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
-            <div class="flex items-center justify-between gap-2 mb-2.5">
-              <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">
-                🎯 Yarışma Kategorileri (<span id="selected-cat-count">12</span>/12 Seçili)
+        <div id="mod-controls" class="hidden pt-5 border-t border-white/10 space-y-4">
+          <div class="p-4 rounded-2xl glass-subcard">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-300">
+                🎯 Yarışma Kategorileri (<span id="selected-cat-count">13</span>/13 Seçili)
               </span>
-              <div class="flex gap-1.5">
-                <button id="btn-select-all-cats" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-300 transition cursor-pointer">
-                  Tümünü Seç
-                </button>
-              </div>
+              <button id="btn-select-all-cats" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 border border-white/10 transition cursor-pointer">
+                Tümünü Seç
+              </button>
             </div>
             <div id="lobby-category-selector" class="flex flex-wrap gap-1.5">
               <!-- Kategori seçim butonları JS ile oluşturulur -->
@@ -292,23 +343,20 @@
           </div>
 
           <div class="flex flex-col sm:flex-row gap-3">
-            <button id="btn-add-bot" type="button" class="sm:w-auto px-4 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition cursor-pointer">
-              🤖 + Test Botu Ekle
+            <button id="btn-add-bot" type="button" class="sm:w-auto px-4 py-3.5 rounded-2xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-white/10 transition cursor-pointer">
+              🤖 + Bot Ekle
             </button>
-            <button id="btn-start-game" type="button" class="flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/25 transition cursor-pointer">
-              🚀 Oturumu Başlat (15 Soru)
+            <button id="btn-start-game" type="button" class="flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-white font-extrabold text-base shadow-xl shadow-emerald-600/30 transition cursor-pointer">
+              🚀 Yarışmayı Başlat (15 Soru)
             </button>
           </div>
-          <p class="text-xs text-center text-slate-400">
-            Tüm arkadaşların listeye eklendiğinde <strong>Oturumu Başlat</strong> butonuna bas.
-          </p>
         </div>
 
         <!-- Misafir Bekleme Mesajı -->
-        <div id="guest-waiting-box" class="hidden pt-5 border-t border-slate-800/90 text-center">
-          <div class="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-slate-900/90 border border-slate-800 text-sm text-slate-300">
+        <div id="guest-waiting-box" class="hidden pt-5 border-t border-white/10 text-center">
+          <div class="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl glass-subcard text-sm text-slate-200">
             <span class="w-2.5 h-2.5 rounded-full bg-indigo-400 animate-bounce"></span>
-            <span>Oda kurucusunun (<strong id="mod-name-display" class="text-white">Moderatör</strong>) oturumu başlatması bekleniyor...</span>
+            <span>Oda kurucusunun (<strong id="mod-name-display" class="text-white">Moderatör</strong>) yarışmayı başlatması bekleniyor...</span>
           </div>
         </div>
       </div>
@@ -318,39 +366,53 @@
     <section id="screen-quiz" class="hidden w-full max-w-3xl mx-auto animate-pop">
       <!-- Üst Bilgi Çubuğu -->
       <div class="glass-card rounded-2xl p-4 mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <span id="quiz-progress-badge" class="px-3.5 py-1.5 rounded-xl bg-indigo-600/30 border border-indigo-400/40 text-indigo-200 font-extrabold text-sm">
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <span id="quiz-progress-badge" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600/40 to-purple-600/40 border border-indigo-400/40 text-white font-extrabold text-sm">
             Soru 1 / 15
           </span>
-          <span id="quiz-category-badge" class="px-3 py-1.5 rounded-xl bg-slate-800/90 border border-slate-700 text-slate-200 font-semibold text-xs sm:text-sm">
-            🏗️ İnşaat &amp; Mühendislik
+          <span id="quiz-category-badge" class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 text-slate-200 font-bold text-xs sm:text-sm">
+            🖼️ Görsel Soru
           </span>
         </div>
 
         <div class="flex items-center gap-4">
           <div class="text-right">
-            <p class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Cevaplayan</p>
-            <p id="quiz-answered-count" class="text-sm font-extrabold text-emerald-400">0 / 1</p>
+            <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Cevaplayan</p>
+            <p id="quiz-answered-count" class="text-sm font-black text-emerald-400">0 / 1</p>
           </div>
-          <div class="w-12 h-12 rounded-2xl bg-slate-900 border-2 border-indigo-500/60 flex items-center justify-center relative">
-            <span id="quiz-timer-text" class="text-lg font-black text-white">20</span>
+
+          <!-- Dairesel İlerlemeli Zamanlayıcı -->
+          <div class="relative w-13 h-13 flex items-center justify-center">
+            <svg class="w-13 h-13 -rotate-90" viewBox="0 0 52 52">
+              <circle cx="26" cy="26" r="22" fill="rgba(15,23,42,0.9)" stroke="rgba(148,163,184,0.2)" stroke-width="4"></circle>
+              <circle id="quiz-timer-ring" cx="26" cy="26" r="22" fill="none" stroke="#6366f1" stroke-width="4" stroke-linecap="round" stroke-dasharray="138.23" stroke-dashoffset="0" style="transition: stroke-dashoffset 0.25s linear, stroke 0.25s ease;"></circle>
+            </svg>
+            <span id="quiz-timer-text" class="absolute text-base font-black text-white">20</span>
           </div>
         </div>
       </div>
 
       <!-- Süre İlerleme Çubuğu -->
-      <div class="w-full h-2 rounded-full bg-slate-800/90 overflow-hidden mb-5">
-        <div id="quiz-timer-bar" class="h-full bg-gradient-to-r from-emerald-400 via-indigo-500 to-purple-500 transition-all duration-300" style="width: 100%"></div>
+      <div class="w-full h-1.5 rounded-full bg-slate-800/90 overflow-hidden mb-5">
+        <div id="quiz-timer-bar" class="h-full bg-gradient-to-r from-emerald-400 via-indigo-500 to-pink-500 transition-all duration-200" style="width: 100%"></div>
       </div>
 
       <!-- Soru Kartı -->
       <div class="glass-card rounded-3xl p-6 sm:p-8 mb-5">
-        <h2 id="quiz-question-text" class="text-lg sm:text-2xl font-bold text-white leading-snug mb-6">
+        <!-- Görsel Soru Alanı -->
+        <div id="visual-question-box" class="hidden mb-6 p-4 rounded-2xl bg-slate-950/75 border border-indigo-400/25 flex flex-col items-center justify-center">
+          <div id="visual-question-media" class="w-full flex justify-center"></div>
+          <span class="mt-2.5 text-[11px] font-semibold text-indigo-300/80 uppercase tracking-wider">
+            🖼️ Görseli inceleyerek doğru seçeneği işaretle
+          </span>
+        </div>
+
+        <h2 id="quiz-question-text" class="text-lg sm:text-2xl font-extrabold text-white leading-snug mb-6">
           Soru yükleniyor...
         </h2>
 
         <!-- Sesli Şarkı Sorusu Oynatıcı Alanı (Tek Dinleme Hakkı) -->
-        <div id="song-player-box" class="hidden mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-950/70 via-indigo-950/70 to-pink-950/70 border border-purple-400/35">
+        <div id="song-player-box" class="hidden mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-950/80 via-indigo-950/80 to-pink-950/80 border border-purple-400/35">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
               <div class="w-12 h-12 rounded-2xl bg-purple-500/25 border border-purple-400/40 flex items-end justify-center gap-1 p-2.5">
@@ -378,7 +440,7 @@
         </div>
 
         <!-- Cevap Sonrası Durum Mesajı -->
-        <div id="quiz-feedback-banner" class="hidden mt-6 p-4 rounded-2xl bg-slate-900/90 border border-slate-700/80 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div id="quiz-feedback-banner" class="hidden mt-6 p-4 rounded-2xl bg-slate-950/90 border border-white/15 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p id="quiz-feedback-text" class="text-sm font-semibold text-slate-200 text-center sm:text-left">
             Cevabın kaydedildi! Diğer oyuncular bekleniyor...
           </p>
@@ -390,9 +452,14 @@
 
       <!-- Anlık Mini Skor Şeridi -->
       <div class="glass-card rounded-2xl p-4">
-        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
-          Canlı Skor Durumu (İlk bilen 10 puan, sonrakiler zamana ve sıraya göre azalarak kazanır)
-        </p>
+        <div class="flex items-center justify-between mb-2.5">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            Canlı Skor &amp; Cevap Durumu
+          </p>
+          <span class="text-[11px] text-emerald-300/90 font-semibold">
+            ⚡ Herkes cevaplayınca otomatik geçer
+          </span>
+        </div>
         <div id="quiz-mini-scoreboard" class="flex flex-wrap gap-2">
           <!-- Mini oyuncu rozetleri -->
         </div>
@@ -401,9 +468,9 @@
 
     <!-- 4. EKRAN: FİNAL SIRALAMASI VE HATA TABLOSU -->
     <section id="screen-results" class="hidden w-full max-w-3xl mx-auto animate-pop">
-      <div class="glass-card rounded-3xl p-6 sm:p-9">
+      <div class="glass-card rounded-3xl p-6 sm:p-9 relative overflow-hidden">
         <div class="text-center mb-8">
-          <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-bold mb-3">
+          <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/35 text-amber-300 text-xs font-extrabold mb-3">
             🏆 15 Soruluk Yarışma Tamamlandı
           </span>
           <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight">
@@ -421,7 +488,7 @@
 
         <!-- Tüm Oyuncular Liderlik Tablosu -->
         <div class="space-y-2.5 mb-8">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-1">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 px-1">
             Genel Puan Tablosu
           </h3>
           <div id="results-full-list" class="space-y-2.5">
@@ -430,7 +497,7 @@
         </div>
 
         <!-- Oyun Sonu Detaylı Hata Analizi Tablosu -->
-        <div class="mb-8 p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-slate-800">
+        <div class="mb-8 p-4 sm:p-5 rounded-2xl glass-subcard">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-rose-300">
               📊 Oyuncu Hata &amp; Doğruluk Analizi Tablosu
@@ -440,7 +507,7 @@
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs sm:text-sm">
               <thead>
-                <tr class="border-b border-slate-800 text-slate-400 text-[11px] uppercase">
+                <tr class="border-b border-white/10 text-slate-400 text-[11px] uppercase">
                   <th class="py-2.5 px-2">Oyuncu</th>
                   <th class="py-2.5 px-2 text-center text-emerald-400">Doğru</th>
                   <th class="py-2.5 px-2 text-center text-rose-400">Yanlış Şık</th>
@@ -449,7 +516,7 @@
                   <th class="py-2.5 px-2 text-right">Başarı %</th>
                 </tr>
               </thead>
-              <tbody id="results-error-tbody" class="divide-y divide-slate-800/70">
+              <tbody id="results-error-tbody" class="divide-y divide-white/10">
                 <!-- Hata satırları JS ile doldurulur -->
               </tbody>
             </table>
@@ -461,7 +528,7 @@
           <button id="btn-play-again" type="button" class="hidden flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-base shadow-xl shadow-indigo-600/25 transition cursor-pointer">
             🔄 Aynı Odada Yeni Sorularla Tekrar Oyna
           </button>
-          <button id="btn-back-home" type="button" class="flex-1 py-4 px-6 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-base border border-slate-700 transition cursor-pointer">
+          <button id="btn-back-home" type="button" class="flex-1 py-4 px-6 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-base border border-white/10 transition cursor-pointer">
             Ana Ekrana Dön
           </button>
         </div>
@@ -474,23 +541,23 @@
     <div class="glass-card rounded-3xl max-w-lg w-full p-6 sm:p-7 animate-pop">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg sm:text-xl font-extrabold text-white">🌐 15 Saniyede Ücretsiz Web Sitesine Ekle</h3>
-        <button id="btn-close-publish" type="button" class="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white">✕</button>
+        <button id="btn-close-publish" type="button" class="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white cursor-pointer">✕</button>
       </div>
       <div class="space-y-3 text-xs sm:text-sm text-slate-300">
         <p class="leading-relaxed">
-          Bu oyun harici bir sunucu gerektirmez; tarayıcılar arası <strong>PeerJS (WebRTC)</strong> teknolojisiyle doğrudan bağlantı kurar. Ücretsiz bir web adresine yüklediğinizde tüm arkadaşlarınız telefon veya bilgisayardan oda linkine tıklayarak katılabilir:
+          Oyunu ücretsiz bir web adresine yüklediğinizde tüm arkadaşlarınız telefon veya bilgisayardan oda linkine tıklayarak katılabilir:
         </p>
-        <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2">
+        <div class="p-3.5 rounded-2xl glass-subcard space-y-2">
           <p><strong class="text-emerald-400">1. Adım:</strong> Aşağıdaki butonla oyunu <code class="text-indigo-300">index.html</code> olarak cihazınıza indirin.</p>
           <p><strong class="text-emerald-400">2. Adım:</strong> Ücretsiz <a href="https://tiiny.host" target="_blank" rel="noopener noreferrer" class="underline text-indigo-400 hover:text-indigo-300">tiiny.host</a> veya <a href="https://app.netlify.com/drop" target="_blank" rel="noopener noreferrer" class="underline text-indigo-400 hover:text-indigo-300">app.netlify.com/drop</a> sayfasını açın.</p>
-          <p><strong class="text-emerald-400">3. Adım:</strong> İndirdiğiniz <code class="text-indigo-300">index.html</code> dosyasını sürükleyip bırakın. Oluşan gerçek web linkini açıp oda kurarak linki arkadaşlarınıza gönderin!</p>
+          <p><strong class="text-emerald-400">3. Adım:</strong> İndirdiğiniz <code class="text-indigo-300">index.html</code> dosyasını sürükleyip bırakın.</p>
         </div>
       </div>
       <div class="mt-5 flex flex-col sm:flex-row gap-2.5">
         <button id="btn-modal-download" type="button" class="flex-1 py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition cursor-pointer">
           ⬇️ 1. index.html İndir
         </button>
-        <button id="btn-close-publish-2" type="button" class="py-3.5 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition cursor-pointer">
+        <button id="btn-close-publish-2" type="button" class="py-3.5 px-5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-white/10 transition cursor-pointer">
           Kapat
         </button>
       </div>
@@ -540,7 +607,8 @@
       hostConn: null,
       guestConns: new Map(),
       broadcastChannel: null,
-      firebaseActive: false
+      firebaseActive: false,
+      lastRenderedSignature: ""
     };
 
     // =========================================================================
@@ -671,7 +739,6 @@
           } catch (e) {}
         }
 
-        // Ağ veya tarayıcı ses kısıtı durumunda yedek vokal okuma
         try {
           if (window.speechSynthesis) {
             const utter = new SpeechSynthesisUtterance(songObj.lyricSnippet || songObj.title);
@@ -694,7 +761,7 @@
     };
 
     // =========================================================================
-    // 3. 9 KATEGORİLİ 450 SORULUK GENİŞ HAVUZ (HER KATEGORİDE 50 SORU)
+    // 3. ANA SORU HAVUZU + GÖRSEL SORULAR + ŞARKI BANKASI
     // =========================================================================
     const QUESTION_BANK = [
       // --- İNŞAAT & MÜHENDİSLİK (50 Orta-Zor Teknik Soru) ---
@@ -3955,7 +4022,454 @@
       }
     ];
 
-    // Türk ve Dünya çapında en bilinen 50 sanatçının şarkıları (4 saniyelik gerçek vokal önizlemesi)
+    
+    // =========================================================================
+    // 3B. GÖRSEL SORU BANKASI (30 ÖZEL VEKTÖREL SVG GÖRSELLİ SORU)
+    // =========================================================================
+    const VISUAL_QUESTION_BANK = [
+      {
+        id: 901,
+        category: "Görsel Soru",
+        question: "Görselde verilen bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#ffffff"/>
+          <circle cx="150" cy="90" r="48" fill="#bc002d"/>
+        </svg>`,
+        options: ["Japonya", "Güney Kore", "Bangladeş", "Palau"],
+        correctIndex: 0
+      },
+      {
+        id: 902,
+        category: "Görsel Soru",
+        question: "Görselde verilen İskandinav haçlı bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#006aa7"/>
+          <rect x="85" y="0" width="32" height="180" fill="#fecc02"/>
+          <rect x="0" y="74" width="300" height="32" fill="#fecc02"/>
+        </svg>`,
+        options: ["İsveç", "Finlandiya", "Norveç", "Danimarka"],
+        correctIndex: 0
+      },
+      {
+        id: 903,
+        category: "Görsel Soru",
+        question: "Görselde silüeti verilen dünyaca ünlü tarihi yapı hangi şehirdedir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <defs>
+            <linearGradient id="skyParis" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1e1b4b"/>
+              <stop offset="100%" stop-color="#4338ca"/>
+            </linearGradient>
+          </defs>
+          <rect width="300" height="180" fill="url(#skyParis)"/>
+          <circle cx="235" cy="42" r="16" fill="#fde047" opacity="0.85"/>
+          <rect x="0" y="155" width="300" height="25" fill="#0f172a"/>
+          <path d="M148 16 L152 16 L154 45 L162 85 L178 130 L195 155 L176 155 L164 132 L136 132 L124 155 L105 155 L122 130 L138 85 L146 45 Z" fill="#f8fafc"/>
+          <path d="M135 155 Q150 136 165 155 Z" fill="#1e1b4b"/>
+          <rect x="131" y="114" width="38" height="5" fill="#cbd5e1"/>
+          <rect x="139" y="82" width="22" height="4" fill="#cbd5e1"/>
+        </svg>`,
+        options: ["Paris", "Londra", "Roma", "Madrid"],
+        correctIndex: 0
+      },
+      {
+        id: 904,
+        category: "Görsel Soru",
+        question: "Yapı statiği görselinde gösterilen mesnet türü aşağıdakilerden hangisidir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15 bg-slate-900">
+          <rect width="300" height="180" fill="#0f172a"/>
+          <line x1="50" y1="68" x2="250" y2="68" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+          <polygon points="150,71 124,116 176,116" fill="none" stroke="#f59e0b" stroke-width="4"/>
+          <circle cx="134" cy="126" r="8" fill="none" stroke="#f59e0b" stroke-width="3.5"/>
+          <circle cx="166" cy="126" r="8" fill="none" stroke="#f59e0b" stroke-width="3.5"/>
+          <line x1="105" y1="136" x2="195" y2="136" stroke="#94a3b8" stroke-width="4"/>
+          <line x1="115" y1="136" x2="105" y2="148" stroke="#94a3b8" stroke-width="2.5"/>
+          <line x1="135" y1="136" x2="125" y2="148" stroke="#94a3b8" stroke-width="2.5"/>
+          <line x1="155" y1="136" x2="145" y2="148" stroke="#94a3b8" stroke-width="2.5"/>
+          <line x1="175" y1="136" x2="165" y2="148" stroke="#94a3b8" stroke-width="2.5"/>
+        </svg>`,
+        options: ["Hareketli (Kayıcı) Mesnet", "Ankastre Mesnet", "Sabit Mafsallı Mesnet", "Elastik Yay Mesnet"],
+        correctIndex: 0
+      },
+      {
+        id: 905,
+        category: "Görsel Soru",
+        question: "Görseldeki bayrak hangi Avrupa ülkesine aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#d52b1e"/>
+          <rect x="132" y="36" width="36" height="108" fill="#ffffff"/>
+          <rect x="96" y="72" width="108" height="36" fill="#ffffff"/>
+        </svg>`,
+        options: ["İsviçre", "Avusturya", "Danimarka", "Polonya"],
+        correctIndex: 0
+      },
+      {
+        id: 906,
+        category: "Görsel Soru",
+        question: "Görseldeki dik üçgende Pisagor teoremine göre '?' ile gösterilen hipotenüs uzunluğu kaç birimdir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0f172a"/>
+          <polygon points="75,35 75,140 225,140" fill="rgba(99,102,241,0.2)" stroke="#818cf8" stroke-width="4"/>
+          <rect x="75" y="124" width="16" height="16" fill="none" stroke="#34d399" stroke-width="2.5"/>
+          <text x="52" y="94" fill="#f8fafc" font-size="18" font-weight="bold">5</text>
+          <text x="142" y="162" fill="#f8fafc" font-size="18" font-weight="bold">12</text>
+          <text x="158" y="80" fill="#fbbf24" font-size="20" font-weight="bold">?</text>
+        </svg>`,
+        options: ["13", "15", "17", "14"],
+        correctIndex: 0
+      },
+      {
+        id: 907,
+        category: "Görsel Soru",
+        question: "Görselde verilen kırmızı-beyaz-kırmızı yatay şeritli bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="60" y="0" fill="#ed2939"/>
+          <rect width="300" height="60" y="60" fill="#ffffff"/>
+          <rect width="300" height="60" y="120" fill="#ed2939"/>
+        </svg>`,
+        options: ["Avusturya", "Letonya", "Polonya", "Endonezya"],
+        correctIndex: 0
+      },
+      {
+        id: 908,
+        category: "Görsel Soru",
+        question: "Görseldeki trafik işaretinin anlamı nedir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#1e293b"/>
+          <circle cx="150" cy="90" r="62" fill="#dc2626" stroke="#ffffff" stroke-width="4"/>
+          <rect x="104" y="80" width="92" height="20" rx="3" fill="#ffffff"/>
+        </svg>`,
+        options: ["Taşıt Giremez (Girişi Olmayan Yol)", "Dur", "Yol Ver", "Park Yapılmaz"],
+        correctIndex: 0
+      },
+      {
+        id: 909,
+        category: "Görsel Soru",
+        question: "Görselde silüeti verilen antik anıtlar hangi ülkede bulunmaktadır?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <defs>
+            <linearGradient id="desertSky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#b45309"/>
+            </linearGradient>
+          </defs>
+          <rect width="300" height="180" fill="url(#desertSky)"/>
+          <circle cx="70" cy="48" r="20" fill="#fef08a"/>
+          <polygon points="65,145 145,42 225,145" fill="#d97706"/>
+          <polygon points="145,42 225,145 182,145" fill="#92400e"/>
+          <polygon points="155,145 215,68 275,145" fill="#f59e0b"/>
+          <polygon points="215,68 275,145 245,145" fill="#b45309"/>
+          <rect x="0" y="145" width="300" height="35" fill="#78350f"/>
+        </svg>`,
+        options: ["Mısır", "Meksika", "Peru", "Sudan"],
+        correctIndex: 0
+      },
+      {
+        id: 910,
+        category: "Görsel Soru",
+        question: "Görseldeki basit mesnetli kirişin tam ortasına etkiyen tekil F yükü altında maksimum eğilme momenti (M_max) kaç kNm olur? (F = 20 kN, L = 6 m)",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0f172a"/>
+          <line x1="55" y1="105" x2="245" y2="105" stroke="#38bdf8" stroke-width="6"/>
+          <polygon points="55,108 42,132 68,132" fill="#22c55e"/>
+          <polygon points="245,108 232,132 258,132" fill="#22c55e"/>
+          <line x1="150" y1="36" x2="150" y2="96" stroke="#f43f5e" stroke-width="4"/>
+          <polygon points="150,102 142,88 158,88" fill="#f43f5e"/>
+          <text x="160" y="56" fill="#fda4af" font-size="14" font-weight="bold">F = 20 kN</text>
+          <text x="122" y="154" fill="#cbd5e1" font-size="14" font-weight="bold">L = 6 m</text>
+        </svg>`,
+        options: ["30 kNm", "60 kNm", "120 kNm", "15 kNm"],
+        correctIndex: 0
+      },
+      {
+        id: 911,
+        category: "Görsel Soru",
+        question: "Görseldeki dikey üç renkli bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="100" height="180" x="0" fill="#009246"/>
+          <rect width="100" height="180" x="100" fill="#ffffff"/>
+          <rect width="100" height="180" x="200" fill="#ce2b37"/>
+        </svg>`,
+        options: ["İtalya", "İrlanda", "Fransa", "Meksika"],
+        correctIndex: 0
+      },
+      {
+        id: 912,
+        category: "Görsel Soru",
+        question: "Görseldeki saat tam kaçı göstermektedir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0f172a"/>
+          <circle cx="150" cy="90" r="68" fill="#1e293b" stroke="#818cf8" stroke-width="5"/>
+          <text x="143" y="38" fill="#f8fafc" font-size="13" font-weight="bold">12</text>
+          <text x="202" y="95" fill="#f8fafc" font-size="13" font-weight="bold">3</text>
+          <text x="146" y="150" fill="#f8fafc" font-size="13" font-weight="bold">6</text>
+          <text x="90" y="95" fill="#f8fafc" font-size="13" font-weight="bold">9</text>
+          <line x1="150" y1="90" x2="118" y2="62" stroke="#f8fafc" stroke-width="5" stroke-linecap="round"/>
+          <line x1="150" y1="90" x2="150" y2="38" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="150" cy="90" r="5" fill="#f59e0b"/>
+        </svg>`,
+        options: ["10:00", "02:00", "10:12", "09:50"],
+        correctIndex: 0
+      },
+      {
+        id: 913,
+        category: "Görsel Soru",
+        question: "Görseldeki kimyasal molekül modeli (1 oksijen ve 2 hidrojen atomu) hangi maddeyi temsil eder?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0f172a"/>
+          <line x1="150" y1="68" x2="96" y2="118" stroke="#94a3b8" stroke-width="8"/>
+          <line x1="150" y1="68" x2="204" y2="118" stroke="#94a3b8" stroke-width="8"/>
+          <circle cx="150" cy="68" r="28" fill="#ef4444"/>
+          <text x="143" y="74" fill="#ffffff" font-size="18" font-weight="bold">O</text>
+          <circle cx="96" cy="118" r="18" fill="#e2e8f0"/>
+          <text x="90" y="124" fill="#0f172a" font-size="15" font-weight="bold">H</text>
+          <circle cx="204" cy="118" r="18" fill="#e2e8f0"/>
+          <text x="198" y="124" fill="#0f172a" font-size="15" font-weight="bold">H</text>
+        </svg>`,
+        options: ["Su (H₂O)", "Karbondioksit (CO₂)", "Metan (CH₄)", "Amonyak (NH₃)"],
+        correctIndex: 0
+      },
+      {
+        id: 914,
+        category: "Görsel Soru",
+        question: "Görseldeki mavi-beyaz yatay şeritli ve sol üst köşesinde haç bulunan bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0d5eaf"/>
+          <rect width="300" height="20" y="20" fill="#ffffff"/>
+          <rect width="300" height="20" y="60" fill="#ffffff"/>
+          <rect width="300" height="20" y="100" fill="#ffffff"/>
+          <rect width="300" height="20" y="140" fill="#ffffff"/>
+          <rect width="100" height="100" x="0" y="0" fill="#0d5eaf"/>
+          <rect width="20" height="100" x="40" y="0" fill="#ffffff"/>
+          <rect width="100" height="20" x="0" y="40" fill="#ffffff"/>
+        </svg>`,
+        options: ["Yunanistan", "Finlandiya", "İsrail", "Uruguay"],
+        correctIndex: 0
+      },
+      {
+        id: 915,
+        category: "Görsel Soru",
+        question: "Görseldeki dijital mantık kapısı (Logic Gate) sembolü hangisidir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0f172a"/>
+          <line x1="55" y1="68" x2="105" y2="68" stroke="#38bdf8" stroke-width="4"/>
+          <line x1="55" y1="112" x2="105" y2="112" stroke="#38bdf8" stroke-width="4"/>
+          <path d="M105 45 L145 45 A45 45 0 0 1 145 135 L105 135 Z" fill="rgba(16,185,129,0.2)" stroke="#34d399" stroke-width="4"/>
+          <line x1="190" y1="90" x2="245" y2="90" stroke="#38bdf8" stroke-width="4"/>
+          <text x="36" y="73" fill="#cbd5e1" font-size="14" font-weight="bold">A</text>
+          <text x="36" y="117" fill="#cbd5e1" font-size="14" font-weight="bold">B</text>
+          <text x="252" y="95" fill="#fbbf24" font-size="14" font-weight="bold">Q</text>
+        </svg>`,
+        options: ["AND (VE) Kapısı", "OR (VEYA) Kapısı", "NOT (DEĞİL) Kapısı", "XOR Kapısı"],
+        correctIndex: 0
+      },
+      {
+        id: 916,
+        category: "Görsel Soru",
+        question: "Görseldeki siyah-kırmızı-sarı yatay şeritli bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="60" y="0" fill="#000000"/>
+          <rect width="300" height="60" y="60" fill="#dd0000"/>
+          <rect width="300" height="60" y="120" fill="#ffce00"/>
+        </svg>`,
+        options: ["Almanya", "Belçika", "Hollanda", "İspanya"],
+        correctIndex: 0
+      },
+      {
+        id: 917,
+        category: "Görsel Soru",
+        question: "Görseldeki ızgara şeklinde büyük kareden küçük kareye bölünmüş şeklin içinde toplam kaç adet kare vardır? (2x2 ızgara)",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0f172a"/>
+          <rect x="90" y="30" width="120" height="120" fill="rgba(168,85,247,0.18)" stroke="#c084fc" stroke-width="4"/>
+          <line x1="150" y1="30" x2="150" y2="150" stroke="#c084fc" stroke-width="3"/>
+          <line x1="90" y1="90" x2="210" y2="90" stroke="#c084fc" stroke-width="3"/>
+        </svg>`,
+        options: ["5 kare", "4 kare", "6 kare", "8 kare"],
+        correctIndex: 0
+      },
+      {
+        id: 918,
+        category: "Görsel Soru",
+        question: "Görseldeki bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0038a8"/>
+          <rect x="95" y="0" width="32" height="180" fill="#ffffff"/>
+          <rect x="0" y="74" width="300" height="32" fill="#ffffff"/>
+          <rect x="103" y="0" width="16" height="180" fill="#d72828"/>
+          <rect x="0" y="82" width="300" height="16" fill="#d72828"/>
+        </svg>`,
+        options: ["İzlanda", "Norveç", "İsveç", "İngiltere"],
+        correctIndex: 0
+      },
+      {
+        id: 919,
+        category: "Görsel Soru",
+        question: "Görseldeki ünlü mimari silüet hangi şehrin sembol yapılarından biridir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0c4a6e"/>
+          <rect x="0" y="142" width="300" height="38" fill="#0369a1"/>
+          <path d="M55 142 Q90 65 135 142 Z" fill="#f8fafc"/>
+          <path d="M105 142 Q145 48 190 142 Z" fill="#e2e8f0"/>
+          <path d="M160 142 Q195 75 235 142 Z" fill="#cbd5e1"/>
+          <path d="M205 142 Q230 98 255 142 Z" fill="#94a3b8"/>
+        </svg>`,
+        options: ["Sidney (Opera Binası)", "Dubai (Burj Al Arab)", "Singapur", "Barselona"],
+        correctIndex: 0
+      },
+      {
+        id: 920,
+        category: "Görsel Soru",
+        question: "Görseldeki elektrik devresi sembolü hangi devre elemanını gösterir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0f172a"/>
+          <line x1="45" y1="90" x2="95" y2="90" stroke="#38bdf8" stroke-width="4"/>
+          <polyline points="95,90 108,68 126,112 144,68 162,112 180,68 196,112 208,90" fill="none" stroke="#fbbf24" stroke-width="4" stroke-linejoin="round"/>
+          <line x1="208" y1="90" x2="255" y2="90" stroke="#38bdf8" stroke-width="4"/>
+        </svg>`,
+        options: ["Direnç (Rezistör)", "Kondansatör (Kapasitör)", "Diyot", "Anahtar"],
+        correctIndex: 0
+      },
+      {
+        id: 921,
+        category: "Görsel Soru",
+        question: "Görseldeki dikey mavi-beyaz-kırmızı üç renkli bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="100" height="180" x="0" fill="#002395"/>
+          <rect width="100" height="180" x="100" fill="#ffffff"/>
+          <rect width="100" height="180" x="200" fill="#ed2939"/>
+        </svg>`,
+        options: ["Fransa", "Hollanda", "Rusya", "Lüksemburg"],
+        correctIndex: 0
+      },
+      {
+        id: 922,
+        category: "Görsel Soru",
+        question: "Görseldeki sarı eşkenar dörtgen ve mavi küre motifli bayrak hangi Güney Amerika ülkesine aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#009c3b"/>
+          <polygon points="150,22 268,90 150,158 32,90" fill="#ffdf00"/>
+          <circle cx="150" cy="90" r="38" fill="#002776"/>
+          <path d="M114 82 Q150 96 186 78" fill="none" stroke="#ffffff" stroke-width="5"/>
+        </svg>`,
+        options: ["Brezilya", "Arjantin", "Kolombiya", "Bolivya"],
+        correctIndex: 0
+      },
+      {
+        id: 923,
+        category: "Görsel Soru",
+        question: "Görseldeki iç açıları birbirine eşit olan düzgün çokgenin bir iç açısı kaç derecedir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0f172a"/>
+          <polygon points="150,26 208,60 208,124 150,158 92,124 92,60" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="4"/>
+          <text x="140" y="96" fill="#f8fafc" font-size="16" font-weight="bold">6 Kenar</text>
+        </svg>`,
+        options: ["120°", "108°", "135°", "140°"],
+        correctIndex: 0
+      },
+      {
+        id: 924,
+        category: "Görsel Soru",
+        question: "Görseldeki beyaz-mavi-kırmızı yatay şeritli bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="60" y="0" fill="#ffffff"/>
+          <rect width="300" height="60" y="60" fill="#0039a6"/>
+          <rect width="300" height="60" y="120" fill="#d52b1e"/>
+        </svg>`,
+        options: ["Rusya", "Hollanda", "Sırbistan", "Slovakya"],
+        correctIndex: 0
+      },
+      {
+        id: 925,
+        category: "Görsel Soru",
+        question: "Görseldeki satranç taşının adı nedir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#0f172a"/>
+          <rect x="105" y="138" width="90" height="14" rx="4" fill="#f8fafc"/>
+          <rect x="118" y="62" width="64" height="76" fill="#e2e8f0"/>
+          <rect x="110" y="42" width="16" height="20" fill="#f8fafc"/>
+          <rect x="142" y="42" width="16" height="20" fill="#f8fafc"/>
+          <rect x="174" y="42" width="16" height="20" fill="#f8fafc"/>
+          <rect x="110" y="56" width="80" height="10" fill="#cbd5e1"/>
+        </svg>`,
+        options: ["Kale", "Vezir", "Fil", "Şah"],
+        correctIndex: 0
+      },
+      {
+        id: 926,
+        category: "Görsel Soru",
+        question: "Görseldeki trafik levhası sürücülere neyi bildirir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#1e293b"/>
+          <polygon points="150,24 222,148 78,148" fill="#ffffff" stroke="#dc2626" stroke-width="12" stroke-linejoin="round"/>
+          <rect x="144" y="64" width="12" height="46" rx="4" fill="#0f172a"/>
+          <circle cx="150" cy="126" r="7" fill="#0f172a"/>
+        </svg>`,
+        options: ["Dikkat (Tehlike Uyarısı)", "Yol Ver", "Mecburi Yön", "Sollama Yasağı"],
+        correctIndex: 0
+      },
+      {
+        id: 927,
+        category: "Görsel Soru",
+        question: "Görseldeki yeşil-beyaz-turuncu dikey şeritli bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="100" height="180" x="0" fill="#169b62"/>
+          <rect width="100" height="180" x="100" fill="#ffffff"/>
+          <rect width="100" height="180" x="200" fill="#ff883e"/>
+        </svg>`,
+        options: ["İrlanda", "Fildişi Sahili", "İtalya", "Hindistan"],
+        correctIndex: 0
+      },
+      {
+        id: 928,
+        category: "Görsel Soru",
+        question: "Görselde kırmızı-beyaz-mavi yatay şeritli bayrak hangi ülkeye aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="60" y="0" fill="#ae1c28"/>
+          <rect width="300" height="60" y="60" fill="#ffffff"/>
+          <rect width="300" height="60" y="120" fill="#21468b"/>
+        </svg>`,
+        options: ["Hollanda", "Fransa", "Rusya", "Çekya"],
+        correctIndex: 0
+      },
+      {
+        id: 929,
+        category: "Görsel Soru",
+        question: "Görseldeki silüet hangi ülkedeki ünlü tarihi amfitiyatroyu (Kolezyum) göstermektedir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="180" fill="#312e81"/>
+          <rect x="45" y="72" width="210" height="78" rx="6" fill="#fde68a"/>
+          <polygon points="165,72 255,72 255,105 185,105" fill="#312e81"/>
+          <rect x="62" y="88" width="16" height="22" rx="8" fill="#78350f"/>
+          <rect x="92" y="88" width="16" height="22" rx="8" fill="#78350f"/>
+          <rect x="122" y="88" width="16" height="22" rx="8" fill="#78350f"/>
+          <rect x="152" y="88" width="16" height="22" rx="8" fill="#78350f"/>
+          <rect x="62" y="120" width="16" height="30" rx="8" fill="#78350f"/>
+          <rect x="92" y="120" width="16" height="30" rx="8" fill="#78350f"/>
+          <rect x="122" y="120" width="16" height="30" rx="8" fill="#78350f"/>
+          <rect x="152" y="120" width="16" height="30" rx="8" fill="#78350f"/>
+          <rect x="182" y="120" width="16" height="30" rx="8" fill="#78350f"/>
+          <rect x="212" y="120" width="16" height="30" rx="8" fill="#78350f"/>
+        </svg>`,
+        options: ["İtalya (Roma)", "Yunanistan (Atina)", "Türkiye (İzmir)", "İspanya (Sevilla)"],
+        correctIndex: 0
+      },
+      {
+        id: 930,
+        category: "Görsel Soru",
+        question: "Görselde verilen kırmızı-sarı-kırmızı yatay şeritli bayrak hangi Avrupa ülkesine aittir?",
+        svg: `<svg viewBox="0 0 300 180" class="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-white/15">
+          <rect width="300" height="45" y="0" fill="#aa151b"/>
+          <rect width="300" height="90" y="45" fill="#f1bf00"/>
+          <rect width="300" height="45" y="135" fill="#aa151b"/>
+          <circle cx="105" cy="90" r="16" fill="#aa151b"/>
+        </svg>`,
+        options: ["İspanya", "Portekiz", "Andorra", "Romanya"],
+        correctIndex: 0
+      }
+    ];
+
+
     const SONG_BANK = [
       {
         id: 301,
@@ -4421,7 +4935,7 @@
       return copy;
     }
 
-    const RECENT_QIDS_STORAGE_KEY = "bilgi_arenasi_recent_qids_v1";
+    const RECENT_QIDS_STORAGE_KEY = "bilgi_arenasi_recent_qids_v2";
 
     function getRecentLocalQuestionIds() {
       try {
@@ -4438,12 +4952,14 @@
       try {
         if (!window.localStorage || !Array.isArray(newIds)) return;
         const existing = getRecentLocalQuestionIds();
-        const merged = [...existing.filter((id) => !newIds.includes(id)), ...newIds].slice(-420);
+        const merged = [...existing.filter((id) => !newIds.includes(id)), ...newIds].slice(-450);
         window.localStorage.setItem(RECENT_QIDS_STORAGE_KEY, JSON.stringify(merged));
       } catch (e) {}
     }
 
     const ALL_CATEGORY_DEFS = [
+      { key: "Görsel Soru", label: "🖼️ Görsel Soru" },
+      { key: "Sesli Şarkı Sorusu", label: "🎵 Sesli Şarkı" },
       { key: "İnşaat & Mühendislik", label: "🏗️ İnşaat & Mühendislik" },
       { key: "Spor", label: "⚽ Spor" },
       { key: "Genel Kültür", label: "🌍 Genel Kültür" },
@@ -4454,8 +4970,7 @@
       { key: "Ekonomi & Finans", label: "💰 Ekonomi & Finans" },
       { key: "Psikoloji & Felsefe", label: "🧠 Psikoloji & Felsefe" },
       { key: "Gastronomi & Dünya Mutfakları", label: "🍽️ Gastronomi" },
-      { key: "Bulmaca & Zeka", label: "🧩 Bulmaca & Zeka" },
-      { key: "Sesli Şarkı Sorusu", label: "🎵 Sesli Şarkı" }
+      { key: "Bulmaca & Zeka", label: "🧩 Bulmaca & Zeka" }
     ];
 
     let selectedCategoryKeys = new Set(ALL_CATEGORY_DEFS.map((c) => c.key));
@@ -4480,6 +4995,7 @@
         "Bulmaca & Zeka"
       ].filter((cat) => activeSet.has(cat));
 
+      const includeVisuals = activeSet.has("Görsel Soru");
       const includeSongs = activeSet.has("Sesli Şarkı Sorusu");
       const combinedExcluded = [...getRecentLocalQuestionIds(), ...excludeIds];
       const excludeSet = new Set(combinedExcluded);
@@ -4498,12 +5014,36 @@
 
       const chosen = [];
 
-      // Sesli şarkı aktifse 2 soru ekle (yalnızca sesli şarkı seçiliyse 15'e tamamla)
+      // Görsel Soru aktifse dengeli sayıda (2 soru, yalnızca görsel seçiliyse 15 soru) ekle
+      if (includeVisuals) {
+        const freshVisuals = shuffleArray(VISUAL_QUESTION_BANK.filter((v) => !excludeSet.has(v.id)));
+        const usedVisuals = shuffleArray(VISUAL_QUESTION_BANK.filter((v) => excludeSet.has(v.id)));
+        const visualPool = [...freshVisuals, ...usedVisuals];
+        const visualQuota =
+          standardCategories.length === 0 && !includeSongs
+            ? TOTAL_QUESTIONS
+            : standardCategories.length === 0
+              ? 8
+              : 2;
+        visualPool.slice(0, visualQuota).forEach((v) => {
+          chosen.push({
+            id: v.id,
+            category: "Görsel Soru",
+            svg: v.svg,
+            question: v.question,
+            options: v.options,
+            correctIndex: v.correctIndex
+          });
+        });
+      }
+
+      // Sesli şarkı aktifse 2 soru ekle
       if (includeSongs) {
         const freshSongs = shuffleArray(SONG_BANK.filter((s) => !excludeSet.has(s.id)));
         const usedSongs = shuffleArray(SONG_BANK.filter((s) => excludeSet.has(s.id)));
         const songPool = [...freshSongs, ...usedSongs];
-        const songQuota = standardCategories.length === 0 ? TOTAL_QUESTIONS : 2;
+        const remainingNeeded = TOTAL_QUESTIONS - chosen.length;
+        const songQuota = standardCategories.length === 0 ? remainingNeeded : 2;
         songPool.slice(0, songQuota).forEach((song) => {
           const options = [song.artist, ...song.distractors];
           chosen.push({
@@ -4518,7 +5058,7 @@
         });
       }
 
-      // Seçili kategorilerden sırayla dengeli soru dağılımı yap
+      // Kalan soruları seçili diğer kategorilerden dengeli dağıt
       let safetyCounter = 0;
       while (chosen.length < TOTAL_QUESTIONS && standardCategories.length > 0 && safetyCounter < 100) {
         safetyCounter++;
@@ -4538,6 +5078,7 @@
         return {
           id: q.id,
           category: q.category,
+          svg: q.svg || null,
           songId: q.songId || null,
           songTitle: q.songTitle || null,
           question: q.question,
@@ -4559,7 +5100,7 @@
       const container = $("toast-container");
       if (!container) return;
       const colors = {
-        info: "bg-slate-800/95 border-indigo-500/50 text-slate-100",
+        info: "bg-slate-900/95 border-indigo-500/50 text-slate-100",
         success: "bg-emerald-950/95 border-emerald-500/60 text-emerald-200",
         error: "bg-rose-950/95 border-rose-500/60 text-rose-200",
         warn: "bg-amber-950/95 border-amber-500/60 text-amber-200"
@@ -4572,7 +5113,7 @@
         el.style.opacity = "0";
         el.style.transition = "opacity 0.25s ease";
         setTimeout(() => el.remove(), 260);
-      }, 3200);
+      }, 3000);
     }
 
     function escapeHtml(str) {
@@ -4727,10 +5268,13 @@
       return room;
     }
 
+    // Oda durumunu alt düğüm olan rooms/{code}/state altına yazarak
+    // misafirlerin yazdığı answerRequests ve joinRequests düğümlerinin ezilmesini önler!
     async function syncRoomToFirebase() {
       if (!state.isModerator || !state.roomData || !state.roomCode) return;
       try {
-        await fbRequest(`rooms/${state.roomCode}`, "PUT", state.roomData);
+        state.roomData.updatedAt = Date.now();
+        await fbRequest(`rooms/${state.roomCode}/state`, "PUT", state.roomData);
         state.firebaseActive = true;
         setConnectionStatus("Bulut Sunucu Aktif (Anlık Senkron)", "ok");
       } catch (e) {
@@ -4745,6 +5289,7 @@
       if (state.syncInterval) clearInterval(state.syncInterval);
       state.syncInterval = null;
       state.firebaseActive = false;
+      state.lastRenderedSignature = "";
       SongAudioPlayer.stop();
 
       if (state.hostConn) {
@@ -4833,13 +5378,36 @@
       renderCurrentRoomState();
     }
 
+    function checkAndTriggerAutoReveal(room, qIndex) {
+      if (!state.isModerator || !room || room.status !== "playing") return false;
+      if (room.currentQuestionIndex !== qIndex || room.questionRevealed) return false;
+
+      const allPlayers = Object.values(room.players || {});
+      if (allPlayers.length === 0) return false;
+
+      const everyoneAnswered = allPlayers.every(
+        (p) => p.answers && p.answers[qIndex] !== undefined
+      );
+
+      if (everyoneAnswered) {
+        revealAndScheduleNextQuestion();
+        return true;
+      }
+      return false;
+    }
+
     function hostHandleAnswer(uid, qIndex, optionIndex) {
       if (!state.isModerator || !state.roomData) return;
       const room = state.roomData;
       if (room.status !== "playing" || room.currentQuestionIndex !== qIndex) return;
       const player = room.players[uid];
       if (!player) return;
-      if (player.answers && player.answers[qIndex] !== undefined) return;
+
+      // Cevap zaten işlendiyse yine de herkesin tamamlayıp tamamlamadığını kontrol et
+      if (player.answers && player.answers[qIndex] !== undefined) {
+        checkAndTriggerAutoReveal(room, qIndex);
+        return;
+      }
 
       const question = room.questions[qIndex];
       const isCorrect = optionIndex === question.correctIndex;
@@ -4871,14 +5439,8 @@
         answeredAt: Date.now()
       };
 
-      const allPlayers = Object.values(room.players);
-      const everyoneAnswered = allPlayers.every(
-        (p) => p.answers && p.answers[qIndex] !== undefined
-      );
-
-      if (everyoneAnswered && !room.questionRevealed) {
-        revealAndScheduleNextQuestion();
-      } else {
+      // Tüm oyuncular cevapladıysa süre bitimini beklemeden anında cevabı aç!
+      if (!checkAndTriggerAutoReveal(room, qIndex)) {
         broadcastRoomState();
         renderCurrentRoomState();
       }
@@ -4910,7 +5472,7 @@
       if (state.advanceTimeout) clearTimeout(state.advanceTimeout);
       state.advanceTimeout = setTimeout(() => {
         goToNextQuestion();
-      }, 3000);
+      }, 2600);
     }
 
     function goToNextQuestion() {
@@ -4944,7 +5506,7 @@
 
       const bots = Object.values(room.players).filter((p) => p.isBot);
       bots.forEach((bot, idx) => {
-        const delay = 2200 + idx * 1400 + Math.floor(Math.random() * 2000);
+        const delay = 2000 + idx * 1200 + Math.floor(Math.random() * 1800);
         setTimeout(() => {
           if (!state.roomData || state.roomData.status !== "playing") return;
           if (state.roomData.currentQuestionIndex !== qIdx || state.roomData.questionRevealed) return;
@@ -4959,8 +5521,11 @@
 
     function startHostFirebasePolling(code) {
       if (state.syncInterval) clearInterval(state.syncInterval);
-      state.syncInterval = setInterval(async () => {
-        if (!state.isModerator || !state.roomData || state.roomCode !== code) return;
+      let isPolling = false;
+
+      const pollHostQueues = async () => {
+        if (isPolling || !state.isModerator || !state.roomData || state.roomCode !== code) return;
+        isPolling = true;
         try {
           const [joinReqs, ansReqs] = await Promise.all([
             fbRequest(`rooms/${code}/joinRequests`, "GET"),
@@ -4968,8 +5533,7 @@
           ]);
 
           if (joinReqs && typeof joinReqs === "object") {
-            const entries = Object.entries(joinReqs);
-            for (const [reqKey, pData] of entries) {
+            for (const [reqKey, pData] of Object.entries(joinReqs)) {
               if (pData && pData.uid) {
                 hostAddOrUpdatePlayer(pData);
               }
@@ -4978,32 +5542,36 @@
           }
 
           if (ansReqs && typeof ansReqs === "object") {
-            const entries = Object.entries(ansReqs);
-            for (const [reqKey, aData] of entries) {
+            for (const [reqKey, aData] of Object.entries(ansReqs)) {
               if (aData && aData.uid !== undefined) {
                 hostHandleAnswer(aData.uid, Number(aData.qIndex), Number(aData.optionIndex));
               }
               fbRequest(`rooms/${code}/answerRequests/${reqKey}`, "DELETE").catch(() => {});
             }
           }
-        } catch (e) {}
-      }, 1100);
+        } catch (e) {} finally {
+          isPolling = false;
+        }
+      };
+
+      pollHostQueues();
+      state.syncInterval = setInterval(pollHostQueues, 500);
     }
 
     function startGuestFirebasePolling(code, playerName) {
       if (state.syncInterval) clearInterval(state.syncInterval);
       let connectedNotified = false;
+      let isPolling = false;
 
       const pollOnce = async () => {
-        if (state.isModerator || state.roomCode !== code) return;
+        if (isPolling || state.isModerator || state.roomCode !== code) return;
+        isPolling = true;
         try {
-          const rawRoom = await fbRequest(`rooms/${code}`, "GET");
+          const rawRoom = await fbRequest(`rooms/${code}/state`, "GET");
           const normalized = normalizeFirebaseRoom(rawRoom);
           if (normalized && normalized.code) {
             state.firebaseActive = true;
             setConnectionStatus("Bulut Sunucu Aktif", "ok");
-            const box = $("peer-troubleshoot-box");
-            if (box) box.classList.add("hidden");
 
             if (!connectedNotified) {
               connectedNotified = true;
@@ -5018,13 +5586,21 @@
               }).catch(() => {});
             }
 
-            // Yerel olarak kilitlenmiş ama sunucuya henüz işlenmemiş cevabı koru
+            // Yerel olarak işaretlenen ama moderatör state'ine henüz yansımamış cevabı koru ve gerekirse tekrar gönder
             const localMe = state.roomData && state.roomData.players ? state.roomData.players[state.playerUid] : null;
             const remoteMe = normalized.players[state.playerUid];
             if (localMe && localMe.answers && remoteMe) {
-              Object.keys(localMe.answers).forEach((k) => {
+              Object.entries(localMe.answers).forEach(([k, ansObj]) => {
                 if (remoteMe.answers[k] === undefined) {
-                  remoteMe.answers[k] = localMe.answers[k];
+                  remoteMe.answers[k] = ansObj;
+                  if (normalized.status === "playing" && Number(k) === normalized.currentQuestionIndex && !normalized.questionRevealed) {
+                    fbRequest(`rooms/${code}/answerRequests/${state.playerUid}_${k}`, "PUT", {
+                      uid: state.playerUid,
+                      qIndex: Number(k),
+                      optionIndex: ansObj.optionIndex,
+                      submittedAt: Date.now()
+                    }).catch(() => {});
+                  }
                 }
               });
             }
@@ -5032,11 +5608,13 @@
             state.roomData = normalized;
             renderCurrentRoomState();
           }
-        } catch (e) {}
+        } catch (e) {} finally {
+          isPolling = false;
+        }
       };
 
       pollOnce();
-      state.syncInterval = setInterval(pollOnce, 1100);
+      state.syncInterval = setInterval(pollOnce, 500);
     }
 
     async function createHostRoom(playerName) {
@@ -5074,11 +5652,9 @@
       setupLocalBroadcast(code);
       setConnectionStatus("Bulut sunucuya bağlanılıyor...", "warn");
 
-      // Firebase Realtime Database'e odayı kaydet ve dinlemeye başla
       syncRoomToFirebase();
       startHostFirebasePolling(code);
 
-      // İkincil kanal olarak PeerJS WebRTC bağlantısını da açık tut
       if (window.Peer) {
         try {
           const peer = new Peer(`bilgi-arenasi-${code}`, getPeerConfig());
@@ -5107,12 +5683,6 @@
             conn.on("close", () => {
               state.guestConns.delete(conn.peer);
             });
-          });
-
-          peer.on("error", () => {
-            if (!state.firebaseActive) {
-              setConnectionStatus("Bağlantı Uyarısı", "warn");
-            }
           });
         } catch (e) {}
       }
@@ -5161,7 +5731,6 @@
 
       setConnectionStatus("Odaya bağlanılıyor...", "warn");
 
-      // 1. Birincil Kanal: Firebase Realtime Database üzerinden odaya katıl
       fbRequest(`rooms/${code}/joinRequests/${state.playerUid}`, "PUT", {
         uid: state.playerUid,
         name: playerName,
@@ -5169,7 +5738,6 @@
       }).catch(() => {});
       startGuestFirebasePolling(code, playerName);
 
-      // 2. İkincil Kanal: PeerJS WebRTC bağlantısı
       if (window.Peer) {
         try {
           const peer = new Peer(undefined, getPeerConfig());
@@ -5185,13 +5753,8 @@
               const retryTimer = setTimeout(() => {
                 if (!joinedConfirmed && !state.firebaseActive && attemptNum < 2) {
                   attemptConnect(attemptNum + 1);
-                } else if (!joinedConfirmed && !state.firebaseActive) {
-                  setConnectionStatus("Oda Bulunamadı", "error");
-                  const box = $("peer-troubleshoot-box");
-                  if (box) box.classList.remove("hidden");
-                  showToast("Odaya ulaşılamadı. Oda kodunu kontrol edin.", "error");
                 }
-              }, 3500);
+              }, 3000);
 
               conn.on("open", () => {
                 clearTimeout(retryTimer);
@@ -5204,7 +5767,7 @@
               });
 
               conn.on("data", (msg) => {
-                if (msg && msg.type === "ROOM_STATE" && msg.roomData && !state.firebaseActive) {
+                if (msg && msg.type === "ROOM_STATE" && msg.roomData) {
                   joinedConfirmed = true;
                   setConnectionStatus("Canlı Bağlantı Aktif", "ok");
                   state.roomData = msg.roomData;
@@ -5237,12 +5800,27 @@
       $("btn-leave-room").classList.toggle("hidden", screenName === "landing");
     }
 
-    function renderCurrentRoomState() {
+    function computeStateSignature(room) {
+      if (!room) return "";
+      const qIdx = room.currentQuestionIndex || 0;
+      const playersSig = Object.values(room.players || {})
+        .map((p) => `${p.uid}:${p.name}:${p.score || 0}:${p.answers && p.answers[qIdx] !== undefined ? p.answers[qIdx].optionIndex : "none"}`)
+        .join("|");
+      return `${room.code}_${room.status}_${qIdx}_${room.questionRevealed ? 1 : 0}_${playersSig}`;
+    }
+
+    function renderCurrentRoomState(force = false) {
       const room = state.roomData;
       if (!room) {
         switchScreen("landing");
         return;
       }
+
+      const sig = computeStateSignature(room);
+      if (!force && sig === state.lastRenderedSignature) {
+        return;
+      }
+      state.lastRenderedSignature = sig;
 
       if (room.status === "lobby") {
         switchScreen("lobby");
@@ -5270,8 +5848,8 @@
       const players = Object.values(room.players || {});
       $("lobby-player-count").textContent = players.length;
       $("lobby-status-hint").textContent =
-        players.length >= 3
-          ? "Harika! Grup hazır, moderatör oyunu başlatabilir."
+        players.length >= 2
+          ? "Harika! Oyuncular hazır, moderatör yarışmayı başlatabilir."
           : "Arkadaşların davet linkiyle katıldıkça burada görünecek...";
 
       const grid = $("lobby-players-grid");
@@ -5280,9 +5858,9 @@
           const isMe = p.uid === state.playerUid;
           const initial = (p.name || "?").charAt(0).toUpperCase();
           return `
-            <div class="p-3.5 rounded-2xl bg-slate-900/90 border ${isMe ? "border-indigo-500/60" : "border-slate-800"} flex items-center justify-between gap-3">
+            <div class="p-3.5 rounded-2xl glass-subcard border ${isMe ? "border-indigo-500/60 bg-indigo-950/25" : "border-white/10"} flex items-center justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${p.color || AVATAR_COLORS[0]} flex items-center justify-center font-extrabold text-white shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${p.color || AVATAR_COLORS[0]} flex items-center justify-center font-extrabold text-white shadow-md shrink-0">
                   ${escapeHtml(initial)}
                 </div>
                 <div class="min-w-0">
@@ -5294,7 +5872,7 @@
                   </p>
                 </div>
               </div>
-              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 text-[11px] font-semibold shrink-0">
+              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold shrink-0">
                 Hazır
               </span>
             </div>
@@ -5326,7 +5904,7 @@
           <button type="button" data-cat-key="${escapeHtml(cat.key)}"
             class="px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition cursor-pointer ${
               active
-                ? "bg-indigo-600/30 border-indigo-400/60 text-white"
+                ? "bg-indigo-600/35 border-indigo-400/60 text-white shadow-sm"
                 : "bg-slate-950/70 border-slate-800 text-slate-500 hover:text-slate-300"
             }">
             ${active ? "✓ " : ""}${escapeHtml(cat.label)}
@@ -5360,6 +5938,8 @@
 
       $("quiz-progress-badge").textContent = `Soru ${qIdx + 1} / ${room.questions.length}`;
       const catIcons = {
+        "Görsel Soru": "🖼️",
+        "Sesli Şarkı Sorusu": "🎵",
         "İnşaat & Mühendislik": "🏗️",
         "Spor": "⚽",
         "Genel Kültür": "🌍",
@@ -5370,11 +5950,21 @@
         "Ekonomi & Finans": "💰",
         "Psikoloji & Felsefe": "🧠",
         "Gastronomi & Dünya Mutfakları": "🍽️",
-        "Bulmaca & Zeka": "🧩",
-        "Sesli Şarkı Sorusu": "🎵"
+        "Bulmaca & Zeka": "🧩"
       };
       $("quiz-category-badge").textContent = `${catIcons[question.category] || "📌"} ${question.category}`;
       $("quiz-question-text").textContent = question.question;
+
+      // Görsel Soru Kutusu
+      const visualBox = $("visual-question-box");
+      const visualMedia = $("visual-question-media");
+      if (question.svg) {
+        visualBox.classList.remove("hidden");
+        visualMedia.innerHTML = question.svg;
+      } else {
+        visualBox.classList.add("hidden");
+        visualMedia.innerHTML = "";
+      }
 
       // Sesli şarkı sorusu kutusu (yalnızca 1 dinleme hakkı)
       const songBox = $("song-player-box");
@@ -5404,21 +5994,21 @@
       const optionsGrid = $("quiz-options-grid");
       optionsGrid.innerHTML = question.options
         .map((opt, idx) => {
-          let styleClass = "bg-slate-900/85 border-slate-700/80 text-slate-100";
+          let styleClass = "bg-slate-900/85 border-white/10 text-slate-100";
           let badgeClass = "bg-slate-800 text-slate-300";
 
           if (room.questionRevealed) {
             if (idx === question.correctIndex) {
-              styleClass = "bg-emerald-500/25 border-emerald-400 text-white shadow-lg shadow-emerald-500/15";
+              styleClass = "bg-emerald-500/25 border-emerald-400 text-white shadow-lg shadow-emerald-500/20";
               badgeClass = "bg-emerald-500 text-slate-950 font-black";
             } else if (myAnswer && myAnswer.optionIndex === idx) {
               styleClass = "bg-rose-500/25 border-rose-400 text-rose-100";
               badgeClass = "bg-rose-500 text-white font-black";
             } else {
-              styleClass = "bg-slate-900/40 border-slate-800 text-slate-500 opacity-70";
+              styleClass = "bg-slate-950/45 border-slate-800/70 text-slate-500 opacity-65";
             }
           } else if (myAnswer && myAnswer.optionIndex === idx) {
-            styleClass = "bg-indigo-600/35 border-indigo-400 text-white";
+            styleClass = "bg-indigo-600/35 border-indigo-400 text-white shadow-md shadow-indigo-500/20";
             badgeClass = "bg-indigo-500 text-white font-black";
           }
 
@@ -5453,14 +6043,15 @@
         const correctText = question.options[question.correctIndex];
         const songExtra = question.songTitle ? ` (${question.songTitle})` : "";
         if (myAnswer && myAnswer.isCorrect) {
-          feedbackText.innerHTML = `<span class="text-emerald-400 font-bold">✅ Tebrikler! +${myAnswer.earnedPoints} Puan kazandın.</span> Doğru cevap: <strong class="text-white">${escapeHtml(correctText)}${escapeHtml(songExtra)}</strong>`;
+          const ptsText = myAnswer.earnedPoints ? `+${myAnswer.earnedPoints} Puan kazandın.` : "Doğru cevap!";
+          feedbackText.innerHTML = `<span class="text-emerald-400 font-bold">✅ Tebrikler! ${ptsText}</span> Doğru cevap: <strong class="text-white">${escapeHtml(correctText)}${escapeHtml(songExtra)}</strong>`;
         } else {
           feedbackText.innerHTML = `<span class="text-rose-400 font-bold">❌ Doğru cevap:</span> <strong class="text-white">${escapeHtml(correctText)}${escapeHtml(songExtra)}</strong> • Sonraki soruya geçiliyor...`;
         }
         nextBtn.classList.toggle("hidden", !state.isModerator);
       } else if (myAnswer !== undefined) {
         feedbackBanner.classList.remove("hidden");
-        feedbackText.textContent = "⏳ Cevabın alındı! Diğer oyuncuların tamamlaması bekleniyor...";
+        feedbackText.textContent = `⏳ Cevabın alındı! (${answeredPlayers.length}/${players.length} oyuncu tamamladı — herkes bitirince otomatik açılır)`;
         nextBtn.classList.add("hidden");
       } else {
         feedbackBanner.classList.add("hidden");
@@ -5473,11 +6064,11 @@
         .map((p, i) => {
           const answered = p.answers && p.answers[qIdx] !== undefined;
           return `
-            <div class="px-3 py-1.5 rounded-xl bg-slate-900/90 border ${answered ? "border-emerald-500/40" : "border-slate-800"} flex items-center gap-2 text-xs">
+            <div class="px-3 py-1.5 rounded-xl bg-slate-900/90 border ${answered ? "border-emerald-500/45 bg-emerald-950/20" : "border-white/10"} flex items-center gap-2 text-xs">
               <span class="font-bold text-slate-400">#${i + 1}</span>
-              <span class="font-semibold text-white">${escapeHtml(p.name)}</span>
+              <span class="font-bold text-white">${escapeHtml(p.name)}</span>
               <span class="font-extrabold text-indigo-300">${p.score || 0}p</span>
-              <span>${answered ? "✓" : "…"}</span>
+              <span class="${answered ? "text-emerald-400 font-bold" : "text-slate-500"}">${answered ? "✓" : "…"}</span>
             </div>
           `;
         })
@@ -5488,20 +6079,31 @@
 
     function startClientTimerLoop(room) {
       if (state.timerInterval) clearInterval(state.timerInterval);
+      const RING_CIRCUMFERENCE = 138.23;
+
       const updateTimer = () => {
         if (!state.roomData || state.roomData.status !== "playing") return;
         const r = state.roomData;
+        const ringEl = $("quiz-timer-ring");
+
         if (r.questionRevealed) {
           $("quiz-timer-text").textContent = "0";
           $("quiz-timer-bar").style.width = "0%";
+          if (ringEl) ringEl.style.strokeDashoffset = String(RING_CIRCUMFERENCE);
           return;
         }
+
         const elapsed = (Date.now() - r.questionStartedAt) / 1000;
         const remaining = Math.max(0, Math.ceil(QUESTION_DURATION_SEC - elapsed));
-        const pct = Math.max(0, Math.min(100, ((QUESTION_DURATION_SEC - elapsed) / QUESTION_DURATION_SEC) * 100));
+        const ratio = Math.max(0, Math.min(1, (QUESTION_DURATION_SEC - elapsed) / QUESTION_DURATION_SEC));
+        const pct = ratio * 100;
 
         $("quiz-timer-text").textContent = String(remaining);
         $("quiz-timer-bar").style.width = `${pct}%`;
+        if (ringEl) {
+          ringEl.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - ratio));
+          ringEl.style.stroke = remaining <= 5 ? "#f43f5e" : remaining <= 10 ? "#f59e0b" : "#6366f1";
+        }
 
         if (remaining <= 5 && remaining > 0) {
           SoundFX.tick();
@@ -5514,7 +6116,7 @@
       };
 
       updateTimer();
-      state.timerInterval = setInterval(updateTimer, 300);
+      state.timerInterval = setInterval(updateTimer, 250);
     }
 
     function submitPlayerAnswer(qIndex, optionIndex) {
@@ -5528,7 +6130,6 @@
       if (state.isModerator) {
         hostHandleAnswer(state.playerUid, qIndex, optionIndex);
       } else {
-        // Misafir oyuncu cevabı yerel olarak kilitler ve moderatöre iletir
         const me = state.roomData.players[state.playerUid];
         if (me) {
           if (!me.answers) me.answers = {};
@@ -5538,7 +6139,7 @@
             earnedPoints: 0,
             answeredAt: Date.now()
           };
-          renderCurrentRoomState();
+          renderCurrentRoomState(true);
         }
 
         const msg = {
@@ -5572,17 +6173,20 @@
         return (b.correctCount || 0) - (a.correctCount || 0);
       });
 
-      // Podyum (İlk 3)
-      const podiumOrder = [1, 0, 2]; // Gümüş (sol), Altın (orta), Bronz (sağ)
+      const podiumOrder = [1, 0, 2];
       const medals = ["🥇", "🥈", "🥉"];
-      const heights = ["sm:py-7 border-amber-400/50 bg-amber-500/10", "sm:py-5 border-slate-400/40 bg-slate-800/70", "sm:py-4 border-orange-500/40 bg-orange-950/30"];
+      const heights = [
+        "sm:py-7 border-amber-400/55 bg-gradient-to-b from-amber-500/20 to-amber-950/20 shadow-lg shadow-amber-500/10",
+        "sm:py-5 border-slate-400/40 bg-slate-800/60",
+        "sm:py-4 border-orange-500/40 bg-orange-950/30"
+      ];
 
       $("results-podium").innerHTML = podiumOrder
         .map((rankIdx) => {
           const p = players[rankIdx];
           if (!p) return "";
           return `
-            <div class="p-4 rounded-2xl border ${heights[rankIdx]} text-center flex flex-col items-center justify-center">
+            <div class="p-4 rounded-2xl border ${heights[rankIdx]} text-center flex flex-col items-center justify-center ${rankIdx === 0 ? "float-slow" : ""}">
               <span class="text-3xl mb-1.5">${medals[rankIdx]}</span>
               <span class="text-xs font-bold uppercase tracking-wider text-slate-400">${rankIdx + 1}. Sıra</span>
               <p class="font-extrabold text-base sm:text-lg text-white mt-0.5 truncate max-w-full">${escapeHtml(p.name)}</p>
@@ -5593,12 +6197,11 @@
         })
         .join("");
 
-      // Genel Puan Tablosu
       $("results-full-list").innerHTML = players
         .map((p, idx) => {
           const isMe = p.uid === state.playerUid;
           return `
-            <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-900/90 border ${isMe ? "border-indigo-500/60" : "border-slate-800"} flex items-center justify-between gap-3">
+            <div class="p-3.5 sm:p-4 rounded-2xl glass-subcard border ${isMe ? "border-indigo-500/60 bg-indigo-950/25" : "border-white/10"} flex items-center justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 <span class="w-8 h-8 rounded-xl bg-slate-800 flex items-center justify-center font-black text-sm text-slate-200 shrink-0">
                   ${idx + 1}
@@ -5624,7 +6227,6 @@
         })
         .join("");
 
-      // Oyun Sonu Detaylı Hata Tablosu
       $("results-error-tbody").innerHTML = players
         .map((p) => {
           const correct = p.correctCount || 0;
@@ -5633,7 +6235,7 @@
           const totalErrors = wrongChoice + timeout;
           const accuracy = Math.round((correct / TOTAL_QUESTIONS) * 100);
           return `
-            <tr class="hover:bg-slate-800/40 transition">
+            <tr class="hover:bg-white/5 transition">
               <td class="py-3 px-2 font-bold text-white">${escapeHtml(p.name)}</td>
               <td class="py-3 px-2 text-center font-bold text-emerald-400">${correct}</td>
               <td class="py-3 px-2 text-center font-semibold text-rose-400">${wrongChoice}</td>
@@ -5667,42 +6269,38 @@
         a.click();
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
-        showToast("index.html indirildi! tiiny.host veya Netlify Drop'a sürükleyebilirsiniz.", "success");
+        showToast("index.html indirildi!", "success");
       } catch (e) {
         showToast("Dosya indirilirken bir hata oluştu.", "error");
       }
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      // Başlangıçta davet linki varsa algıla
       const initialCode = detectInitialRoomCode();
       if (initialCode) {
         $("invite-banner").classList.remove("hidden");
         $("banner-room-code").textContent = initialCode;
         $("input-room-code").value = initialCode;
-        // Otomatik Odaya Katıl sekmesine geç
-        $("tab-join").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition bg-emerald-600 text-white shadow-md";
-        $("tab-create").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition text-slate-400 hover:text-white";
+        $("tab-join").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md cursor-pointer";
+        $("tab-create").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition text-slate-400 hover:text-white cursor-pointer";
         $("panel-create").classList.add("hidden");
         $("panel-join").classList.remove("hidden");
       }
 
-      // Sekme geçişleri
       $("tab-create").addEventListener("click", () => {
-        $("tab-create").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition bg-indigo-600 text-white shadow-md";
-        $("tab-join").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition text-slate-400 hover:text-white";
+        $("tab-create").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md cursor-pointer";
+        $("tab-join").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition text-slate-400 hover:text-white cursor-pointer";
         $("panel-create").classList.remove("hidden");
         $("panel-join").classList.add("hidden");
       });
 
       $("tab-join").addEventListener("click", () => {
-        $("tab-join").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition bg-emerald-600 text-white shadow-md";
-        $("tab-create").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition text-slate-400 hover:text-white";
+        $("tab-join").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md cursor-pointer";
+        $("tab-create").className = "py-2.5 px-3 rounded-xl text-sm font-bold transition text-slate-400 hover:text-white cursor-pointer";
         $("panel-create").classList.add("hidden");
         $("panel-join").classList.remove("hidden");
       });
 
-      // Oda oluşturma
       $("btn-create-room").addEventListener("click", () => {
         const name = $("input-player-name").value.trim();
         if (!name) {
@@ -5714,7 +6312,6 @@
         createHostRoom(name);
       });
 
-      // Odaya katılma
       $("btn-join-room").addEventListener("click", () => {
         const name = $("input-player-name").value.trim();
         const code = extractRoomCodeFromInput($("input-room-code").value);
@@ -5732,7 +6329,6 @@
         joinGuestRoom(name, code);
       });
 
-      // Link & Kod Kopyalama
       $("btn-copy-link").addEventListener("click", () => {
         const link = $("lobby-invite-link").value;
         copyTextSafe(link).then(() => {
@@ -5751,7 +6347,6 @@
         });
       });
 
-      // Test Botu Ekleme
       $("btn-add-bot").addEventListener("click", () => {
         if (!state.isModerator || !state.roomData) return;
         const botNames = ["Bot Mert", "Bot Elif", "Bot Deniz", "Bot Selin", "Bot Arda"];
@@ -5764,7 +6359,6 @@
         });
       });
 
-      // Oturumu Başlatma
       $("btn-start-game").addEventListener("click", () => {
         if (!state.isModerator || !state.roomData) return;
         const prevUsed = state.roomData.usedQuestionIds || [];
@@ -5791,17 +6385,16 @@
         state.roomData.status = "playing";
 
         broadcastRoomState();
-        renderCurrentRoomState();
+        renderCurrentRoomState(true);
         scheduleBotAnswersForCurrentQuestion();
       });
 
       $("btn-select-all-cats").addEventListener("click", () => {
         selectedCategoryKeys = new Set(ALL_CATEGORY_DEFS.map((c) => c.key));
         renderLobbyCategorySelector();
-        showToast("Tüm 12 kategori seçildi!", "info");
+        showToast("Tüm 13 kategori seçildi!", "info");
       });
 
-      // Sesli Şarkı Sorusu Dinleme (Yalnızca 1 Kez)
       $("btn-play-song").addEventListener("click", () => {
         const room = state.roomData;
         if (!room || room.status !== "playing") return;
@@ -5823,12 +6416,10 @@
         });
       });
 
-      // Moderatör Manuel Sonraki Soru
       $("btn-next-question").addEventListener("click", () => {
         if (state.isModerator) goToNextQuestion();
       });
 
-      // Aynı Odada Tekrar Oyna
       $("btn-play-again").addEventListener("click", () => {
         if (!state.isModerator || !state.roomData) return;
         state.roomData.status = "lobby";
@@ -5842,10 +6433,9 @@
           p.answers = {};
         });
         broadcastRoomState();
-        renderCurrentRoomState();
+        renderCurrentRoomState(true);
       });
 
-      // Odadan Çık / Ana Ekrana Dön
       const leaveToHome = () => {
         destroyNetworkSession();
         state.roomData = null;
@@ -5856,14 +6446,12 @@
       $("btn-leave-room").addEventListener("click", leaveToHome);
       $("btn-back-home").addEventListener("click", leaveToHome);
 
-      // Ses efektleri aç/kapat
       $("btn-toggle-sound").addEventListener("click", () => {
         state.soundEnabled = !state.soundEnabled;
         $("sound-icon").textContent = state.soundEnabled ? "🔊" : "🔇";
         showToast(state.soundEnabled ? "Ses efektleri açıldı" : "Ses efektleri kapatıldı", "info");
       });
 
-      // Ücretsiz Web Sitesi Yayınlama Modalı ve İndirme
       $("btn-open-publish").addEventListener("click", () => $("publish-modal").classList.remove("hidden"));
       $("btn-open-publish-from-warn").addEventListener("click", () => $("publish-modal").classList.remove("hidden"));
       $("btn-close-publish").addEventListener("click", () => $("publish-modal").classList.add("hidden"));
@@ -5872,5 +6460,5 @@
       $("btn-modal-download").addEventListener("click", downloadGameHtmlFile);
     });
   </script>
-
-</body></html>
+</body>
+</html>
