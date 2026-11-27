@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bilgi Arenası — Çok Oyunculu Yarışma</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #131b33;
+      --panel-2: #1a2444;
+      --text: #f3f6ff;
+      --muted: #9aa7c7;
+      --accent: #3b82f6;
+      --accent-2: #10b981;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at top, #172347 0%, var(--bg) 60%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 16px 20px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    h1 { margin: 0; font-size: 1.4rem; }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    input, select, button {
+      font: inherit;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      color: var(--text);
+      background: var(--panel-2);
+    }
+    input::placeholder { color: var(--muted); }
+    button {
+      cursor: pointer;
+      background: var(--accent);
+      border: none;
+      font-weight: 600;
+      transition: transform 0.06s ease, opacity 0.15s ease;
+    }
+    button:hover:not(:disabled) { opacity: 0.92; }
+    button:active:not(:disabled) { transform: scale(0.98); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    button.secondary { background: var(--panel-2); border: 1px solid var(--border); }
+    button.success { background: var(--accent-2); color: #052e16; }
+    button.danger { background: var(--danger); }
+    button.warn { background: var(--warn); color: #271500; }
+    .player-list { list-style: none; padding: 0; margin: 12px 0 0; }
+    .player-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--panel-2);
+      margin-bottom: 8px;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    @media (max-width: 600px) {
+      .options { grid-template-columns: 1fr; }
+    }
+    .opt-btn {
+      text-align: left;
+      padding: 14px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+    }
+    .opt-btn.selected { border-color: var(--accent); outline: 2px solid var(--accent); }
+    .opt-btn.correct { background: rgba(16, 185, 129, 0.25); border-color: var(--accent-2); }
+    .opt-btn.wrong { background: rgba(239, 68, 68, 0.25); border-color: var(--danger); }
+    .status { font-size: 0.9rem; color: var(--warn); margin-top: 10px; min-height: 20px; }
+    .hidden { display: none !important; }
+    .invite-box {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .invite-box input { flex: 1; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>🏆 Bilgi Arenası</h1>
+        <div class="sub">Gerçek zamanlı çok oyunculu bilgi yarışması &amp; kontrol merkezi</div>
+      </div>
+      <div class="row">
+        <span id="connBadge" class="badge">⏳ Bağlanıyor...</span>
+        <span id="roomBadge" class="badge hidden">Oda: -</span>
+      </div>
+    </header>
+
+    <!-- GİRİŞ EKRANI -->
+    <section id="joinScreen" class="card">
+      <h2>Oda Kur veya Davet Linkiyle Katıl</h2>
+      <div class="row" style="margin-top: 12px;">
+        <input id="nickInput" type="text" maxlength="20" placeholder="Takma adın (örn. Yusuf)" />
+        <input id="roomCodeInput" type="text" maxlength="6" placeholder="Oda Kodu (isteğe bağlı)" style="width: 190px; text-transform: uppercase;" />
+        <button id="createRoomBtn">Yeni Oda Kur</button>
+        <button id="joinRoomBtn" class="secondary">Odaya Katıl</button>
+      </div>
+      <div id="joinStatus" class="status"></div>
+    </section>
+
+    <!-- OYUN VE LOBİ ALANI -->
+    <div id="gameWorkspace" class="grid hidden">
+      <div>
+        <!-- LOBİ -->
+        <section id="lobbyCard" class="card">
+          <h2>Lobi — <span id="lobbyRoomTitle"></span></h2>
+          <div class="sub">Arkadaşlarına aşağıdaki bağlantıyı gönder; aynı odada ayrı oyuncular olarak görünürler.</div>
+          <div class="invite-box">
+            <input id="inviteLinkInput" type="text" readonly />
+            <button id="copyInviteBtn" class="secondary">Kopyala</button>
+          </div>
+
+          <div class="row" style="margin-top: 16px;">
+            <label>Soru Sayısı:
+              <select id="qCountSelect">
+                <option value="5">5 Soru</option>
+                <option value="10" selected>10 Soru</option>
+                <option value="15">15 Soru</option>
+              </select>
+            </label>
+            <label>Süre:
+              <select id="qTimeSelect">
+                <option value="10">10 sn</option>
+                <option value="15" selected>15 sn</option>
+                <option value="20">20 sn</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row" style="margin-top: 16px;">
+            <button id="startGameBtn" class="success">Yarışmayı Başlat</button>
+            <button id="addBotBtn" class="secondary">+ Bot Ekle</button>
+            <button id="resetRoomBtn" class="warn">Odayı Sıfırla</button>
+            <button id="leaveRoomBtn" class="danger">Odadan Çık</button>
+          </div>
+          <div id="lobbyStatus" class="status"></div>
+        </section>
+
+        <!-- SORU EKRANI -->
+        <section id="questionCard" class="card hidden">
+          <div class="row" style="justify-content: space-between;">
+            <span id="qProgress" class="badge">Soru 1 / 10</span>
+            <span id="qCategory" class="badge">Genel Kültür</span>
+            <span id="qTimer" class="badge">⏱ 15s</span>
+          </div>
+          <h2 id="qText" style="margin-top: 16px; line-height: 1.4;">Soru yükleniyor...</h2>
+          <div id="qOptions" class="options"></div>
+          <div id="qFeedback" class="status"></div>
+          <div class="row" style="margin-top: 14px;">
+            <button id="nextQuestionBtn" class="hidden">Sonraki Soru →</button>
+          </div>
+        </section>
+
+        <!-- SONUÇ EKRANI -->
+        <section id="resultCard" class="card hidden">
+          <h2>🎉 Yarışma Sona Erdi!</h2>
+          <div class="sub">Güncel sıralama sağdaki puan tablosunda yer alıyor.</div>
+          <div class="row" style="margin-top: 16px;">
+            <button id="playAgainBtn" class="success">Yeni Tur Başlat</button>
+          </div>
+        </section>
+
+        <!-- KONTROL PANELİ -->
+        <section id="controlPanel" class="card">
+          <h3>🛠️ Kontrol Paneli (Özel Soru &amp; Yönetim)</h3>
+          <div class="sub">Yarışma havuzuna anlık yeni soru ekleyebilir veya oda verilerini yönetebilirsin.</div>
+          <div style="margin-top: 12px; display: grid; gap: 8px;">
+            <input id="customQText" type="text" placeholder="Soru metni..." />
+            <div class="row">
+              <input id="opt0" type="text" placeholder="Şık A" style="flex:1" />
+              <input id="opt1" type="text" placeholder="Şık B" style="flex:1" />
+            </div>
+            <div class="row">
+              <input id="opt2" type="text" placeholder="Şık C" style="flex:1" />
+              <input id="opt3" type="text" placeholder="Şık D" style="flex:1" />
+            </div>
+            <div class="row">
+              <select id="correctIdx">
+                <option value="0">Doğru Şık: A</option>
+                <option value="1">Doğru Şık: B</option>
+                <option value="2">Doğru Şık: C</option>
+                <option value="3">Doğru Şık: D</option>
+              </select>
+              <input id="customCat" type="text" value="Özel" style="width: 140px;" />
+              <button id="addCustomQBtn" class="secondary">Havuz'a Ekle</button>
+            </div>
+          </div>
+          <div id="controlStatus" class="status"></div>
+        </section>
+      </div>
+
+      <!-- PUAN TABLOSU -->
+      <aside class="card">
+        <h3>📊 Oyuncular ve Puanlar</h3>
+        <ul id="leaderboard" class="player-list"></ul>
+      </aside>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getDatabase, ref, set, get, update, onValue, remove } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDk2MXkEcxNQCZFkOSjDBZyf9_FQV6wZJQ",
+      authDomain: "bilgi-arenasi-neta.firebaseapp.com",
+      databaseURL: "https://bilgi-arenasi-neta-default-rtdb.firebaseio.com",
+      projectId: "bilgi-arenasi-neta",
+      storageBucket: "bilgi-arenasi-neta.firebasestorage.app",
+      messagingSenderId: "350934182912",
+      appId: "1:350934182912:web:fda0d5fd6d6e2c21237ce5",
+      measurementId: "G-KFF3CTD1LT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const QUESTION_BANK = [
+      { category: "Spor", q: "Şampiyonlar Ligi tarihinde kupayı en çok müzesine götüren takım hangisidir?", options: ["Real Madrid", "AC Milan", "Bayern Münih", "Liverpool"], answer: 0 },
+      { category: "Spor", q: "Futbol maçında normal oyun süresi kaç dakikadır?", options: ["80", "90", "95", "100"], answer: 1 },
+      { category: "Genel Kültür", q: "Türkiye'nin en kalabalık şehri hangisidir?", options: ["Ankara", "İzmir", "İstanbul", "Bursa"], answer: 2 },
+      { category: "Genel Kültür", q: "Mona Lisa tablosu hangi sanatçıya aittir?", options: ["Michelangelo", "Leonardo da Vinci", "Raphael", "Donatello"], answer: 1 },
+      { category: "Bilim", q: "Su molekülünün kimyasal formülü nedir?", options: ["CO2", "H2O", "NaCl", "O2"], answer: 1 },
+      { category: "Tarih", q: "Türkiye Cumhuriyeti hangi yıl ilan edilmiştir?", options: ["1919", "1920", "1923", "1938"], answer: 2 },
+      { category: "Coğrafya", q: "Dünyanın en uzun nehri genellikle hangisi kabul edilir?", options: ["Amazon", "Nil", "Tuna", "Fırat"], answer: 1 },
+      { category: "Genel Kültür", q: "Bir günde kaç saniye vardır?", options: ["86.400", "36.000", "144.000", "24.000"], answer: 0 },
+      { category: "Spor", q: "Basketbolda serbest atış çizgisinden atılan basket kaç puandır?", options: ["1", "2", "3", "4"], answer: 0 },
+      { category: "Teknoloji", q: "HTML açılımında 'L' harfi neyi ifade eder?", options: ["Link", "Language", "Logic", "Layout"], answer: 1 },
+      { category: "Tarih", q: "İstanbul'un fethi hangi yılda gerçekleşmiştir?", options: ["1453", "1071", "1299", "1517"], answer: 0 },
+      { category: "Coğrafya", q: "Çanakkale Boğazı hangi iki denizi birbirine bağlar?", options: ["Karadeniz - Marmara", "Ege - Marmara", "Ege - Akdeniz", "Karadeniz - Akdeniz"], answer: 1 }
+    ];
+
+    // Her sekme/cihaz için ayrı oyuncu kimliği (sessionStorage)
+    let playerId = sessionStorage.getItem("bilgiArenasiPlayerId");
+    if (!playerId) {
+      playerId = "p_" + Math.random().toString(36).slice(2, 9);
+      sessionStorage.setItem("bilgiArenasiPlayerId", playerId);
+    }
+
+    let currentRoom = null;
+    let roomUnsub = null;
+    let timerInterval = null;
+    let answeredThisRound = false;
+    let customQuestions = [];
+
+    const el = (id) => document.getElementById(id);
+    el("connBadge").textContent = "🟢 Bağlantı Hazır";
+
+    // URL'deki ?room=KOD parametresini otomatik doldur
+    const params = new URLSearchParams(window.location.search);
+    const urlRoom = params.get("room");
+    if (urlRoom) {
+      el("roomCodeInput").value = urlRoom.toUpperCase().slice(0, 6);
+    }
+
+    function randomCode() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let out = "";
+      for (let i = 0; i < 5; i++) out += chars[Math.floor(Math.random() * chars.length)];
+      return out;
+    }
+
+    function buildInviteUrl(code) {
+      const base = window.location.origin + window.location.pathname;
+      return `${base}?room=${encodeURIComponent(code)}`;
+    }
+
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    async function enterRoom(code, isHostCreate) {
+      const nick = el("nickInput").value.trim() || "Oyuncu";
+      const cleanCode = code.trim().toUpperCase();
+      if (!cleanCode) {
+        el("joinStatus").textContent = "Lütfen geçerli bir oda kodu girin veya yeni oda kurun.";
+        return;
+      }
+
+      const roomRef = ref(db, `rooms/${cleanCode}`);
+      const snap = await get(roomRef);
+
+      if (!snap.exists() && !isHostCreate) {
+        el("joinStatus").textContent = "Bu kodla aktif bir oda bulunamadı.";
+        return;
+      }
+
+      if (!snap.exists() || isHostCreate) {
+        await set(roomRef, {
+          createdAt: Date.now(),
+          hostId: playerId,
+          status: "lobby",
+          questionCount: 10,
+          questionTime: 15,
+          currentIndex: 0,
+          questionStartAt: 0,
+          questions: [],
+          players: {}
+        });
+      }
+
+      await set(ref(db, `rooms/${cleanCode}/players/${playerId}`), {
+        id: playerId,
+        name: nick,
+        score: 0,
+        isBot: false,
+        answeredIndex: -1,
+        joinedAt: Date.now()
+      });
+
+      currentRoom = cleanCode;
+      const newUrl = buildInviteUrl(cleanCode);
+      window.history.replaceState({}, "", newUrl);
+      el("inviteLinkInput").value = newUrl;
+      el("lobbyRoomTitle").textContent = cleanCode;
+      el("roomBadge").textContent = `Oda: ${cleanCode}`;
+      el("roomBadge").classList.remove("hidden");
+      el("joinScreen").classList.add("hidden");
+      el("gameWorkspace").classList.remove("hidden");
+
+      subscribeRoom(cleanCode);
+    }
+
+    function subscribeRoom(code) {
+      if (roomUnsub) roomUnsub();
+      const roomRef = ref(db, `rooms/${code}`);
+      roomUnsub = onValue(roomRef, (snap) => {
+        if (!snap.exists()) return;
+        const data = snap.val();
+        renderRoom(data);
+      });
+    }
+
+    function renderRoom(data) {
+      const playersObj = data.players || {};
+      const list = Object.values(playersObj).sort((a, b) => (b.score || 0) - (a.score || 0));
+      const isHost = data.hostId === playerId;
+
+      const ul = el("leaderboard");
+      ul.innerHTML = "";
+      list.forEach((p, idx) => {
+        const li = document.createElement("li");
+        li.className = "player-item";
+        const tag = p.id === data.hostId ? " (Moderatör)" : p.isBot ? " (Bot)" : p.id === playerId ? " (Sen)" : "";
+        const kickBtn = isHost && p.id !== playerId
+          ? `<button class="danger" style="padding:4px 8px;font-size:0.75rem" data-kick="${p.id}">At</button>`
+          : "";
+        li.innerHTML = `<span>#${idx + 1} <strong>${escapeHtml(p.name)}</strong>${tag}</span><span class="row"><strong>${p.score || 0}</strong>${kickBtn}</span>`;
+        ul.appendChild(li);
+      });
+
+      ul.querySelectorAll("[data-kick]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const targetId = btn.getAttribute("data-kick");
+          await remove(ref(db, `rooms/${currentRoom}/players/${targetId}`));
+        });
+      });
+
+      el("startGameBtn").disabled = !isHost;
+      el("addBotBtn").disabled = !isHost;
+      el("resetRoomBtn").disabled = !isHost;
+
+      if (data.status === "lobby") {
+        clearInterval(timerInterval);
+        el("lobbyCard").classList.remove("hidden");
+        el("questionCard").classList.add("hidden");
+        el("resultCard").classList.add("hidden");
+      } else if (data.status === "playing") {
+        el("lobbyCard").classList.add("hidden");
+        el("questionCard").classList.remove("hidden");
+        el("resultCard").classList.add("hidden");
+        renderQuestion(data, isHost);
+      } else if (data.status === "finished") {
+        clearInterval(timerInterval);
+        el("lobbyCard").classList.add("hidden");
+        el("questionCard").classList.add("hidden");
+        el("resultCard").classList.remove("hidden");
+      }
+    }
+
+    function renderQuestion(data, isHost) {
+      const questions = data.questions || [];
+      const idx = data.currentIndex || 0;
+      const qObj = questions[idx];
+      if (!qObj) return;
+
+      el("qProgress").textContent = `Soru ${idx + 1} / ${questions.length}`;
+      el("qCategory").textContent = qObj.category || "Genel";
+      el("qText").textContent = qObj.q;
+
+      const me = (data.players && data.players[playerId]) || {};
+      answeredThisRound = typeof me.answeredIndex === "number" && me.answeredIndex >= 0;
+
+      const optWrap = el("qOptions");
+      optWrap.innerHTML = "";
+      qObj.options.forEach((optText, i) => {
+        const btn = document.createElement("button");
+        btn.className = "opt-btn";
+        btn.textContent = `${["A", "B", "C", "D"][i]}) ${optText}`;
+        if (answeredThisRound) {
+          btn.disabled = true;
+          if (i === qObj.answer) btn.classList.add("correct");
+          else if (i === me.answeredIndex) btn.classList.add("wrong");
+        }
+        btn.addEventListener("click", () => submitAnswer(data, i, qObj.answer));
+        optWrap.appendChild(btn);
+      });
+
+      el("qFeedback").textContent = answeredThisRound ? "Cevabın kaydedildi!" : "";
+      el("nextQuestionBtn").classList.toggle("hidden", !isHost);
+      el("nextQuestionBtn").textContent = idx + 1 >= questions.length ? "Sonuçları Gör →" : "Sonraki Soru →";
+
+      clearInterval(timerInterval);
+      const duration = Number(data.questionTime || 15);
+      timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - (data.questionStartAt || Date.now())) / 1000);
+        const left = Math.max(0, duration - elapsed);
+        el("qTimer").textContent = `⏱ ${left}s`;
+        if (left <= 0) clearInterval(timerInterval);
+      }, 250);
+    }
+
+    async function submitAnswer(data, chosenIdx, correctIdx) {
+      if (answeredThisRound || !currentRoom) return;
+      answeredThisRound = true;
+      const me = (data.players && data.players[playerId]) || { score: 0 };
+      const duration = Number(data.questionTime || 15);
+      const elapsed = Math.max(0, (Date.now() - (data.questionStartAt || Date.now())) / 1000);
+      const speedBonus = Math.max(0, Math.round((duration - elapsed) * 10));
+      const earned = chosenIdx === correctIdx ? 100 + speedBonus : 0;
+
+      await update(ref(db, `rooms/${currentRoom}/players/${playerId}`), {
+        score: (me.score || 0) + earned,
+        answeredIndex: chosenIdx
+      });
+
+      el("qFeedback").textContent = chosenIdx === correctIdx
+        ? `Doğru! +${earned} puan kazandın.`
+        : "Yanlış cevap, puan eklenmedi.";
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, (m) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[m]));
+    }
+
+    el("createRoomBtn").addEventListener("click", () => enterRoom(el("roomCodeInput").value || randomCode(), true));
+    el("joinRoomBtn").addEventListener("click", () => enterRoom(el("roomCodeInput").value, false));
+
+    el("copyInviteBtn").addEventListener("click", async () => {
+      await navigator.clipboard.writeText(el("inviteLinkInput").value);
+      el("lobbyStatus").textContent = "Davet bağlantısı panoya kopyalandı!";
+    });
+
+    el("startGameBtn").addEventListener("click", async () => {
+      if (!currentRoom) return;
+      const count = Number(el("qCountSelect").value);
+      const qTime = Number(el("qTimeSelect").value);
+      const pool = shuffle([...customQuestions, ...QUESTION_BANK]).slice(0, count);
+
+      const snap = await get(ref(db, `rooms/${currentRoom}/players`));
+      const players = snap.val() || {};
+      const resets = {};
+      Object.keys(players).forEach((pid) => {
+        resets[`players/${pid}/score`] = 0;
+        resets[`players/${pid}/answeredIndex`] = -1;
+      });
+
+      await update(ref(db, `rooms/${currentRoom}`), {
+        status: "playing",
+        questionCount: count,
+        questionTime: qTime,
+        currentIndex: 0,
+        questionStartAt: Date.now(),
+        questions: pool,
+        ...resets
+      });
+    });
+
+    el("addBotBtn").addEventListener("click", async () => {
+      if (!currentRoom) return;
+      const botId = "bot_" + Math.random().toString(36).slice(2, 7);
+      const botNames = ["Logar Bot", "Kuna Bot", "Ziya Bot", "Arenacı Bot"];
+      const name = botNames[Math.floor(Math.random() * botNames.length)];
+      await set(ref(db, `rooms/${currentRoom}/players/${botId}`), {
+        id: botId,
+        name,
+        score: Math.floor(Math.random() * 120),
+        isBot: true,
+        answeredIndex: -1,
+        joinedAt: Date.now()
+      });
+    });
+
+    el("nextQuestionBtn").addEventListener("click", async () => {
+      if (!currentRoom) return;
+      const snap = await get(ref(db, `rooms/${currentRoom}`));
+      const data = snap.val();
+      if (!data) return;
+      const nextIdx = (data.currentIndex || 0) + 1;
+      const players = data.players || {};
+      const updates = {
+        currentIndex: nextIdx,
+        questionStartAt: Date.now()
+      };
+      Object.keys(players).forEach((pid) => {
+        updates[`players/${pid}/answeredIndex`] = -1;
+      });
+      if (nextIdx >= (data.questions || []).length) {
+        updates.status = "finished";
+      }
+      await update(ref(db, `rooms/${currentRoom}`), updates);
+    });
+
+    el("resetRoomBtn").addEventListener("click", async () => {
+      if (!currentRoom) return;
+      await update(ref(db, `rooms/${currentRoom}`), {
+        status: "lobby",
+        currentIndex: 0,
+        questionStartAt: 0
+      });
+    });
+
+    el("playAgainBtn").addEventListener("click", async () => {
+      if (!currentRoom) return;
+      await update(ref(db, `rooms/${currentRoom}`), { status: "lobby" });
+    });
+
+    el("leaveRoomBtn").addEventListener("click", async () => {
+      if (!currentRoom) return;
+      await remove(ref(db, `rooms/${currentRoom}/players/${playerId}`));
+      window.location.reload();
+    });
+
+    el("addCustomQBtn").addEventListener("click", () => {
+      const q = el("customQText").value.trim();
+      const opts = [el("opt0").value.trim(), el("opt1").value.trim(), el("opt2").value.trim(), el("opt3").value.trim()];
+      if (!q || opts.some((o) => !o)) {
+        el("controlStatus").textContent = "Soru metnini ve 4 şıkkı da doldurmalısın.";
+        return;
+      }
+      customQuestions.push({
+        category: el("customCat").value.trim() || "Özel",
+        q,
+        options: opts,
+        answer: Number(el("correctIdx").value)
+      });
+      el("customQText").value = "";
+      el("opt0").value = "";
+      el("opt1").value = "";
+      el("opt2").value = "";
+      el("opt3").value = "";
+      el("controlStatus").textContent = `Soru eklendi! Aktif havuzdaki özel soru sayısı: ${customQuestions.length}`;
+    });
+  </script>
+</body>
+</html>
